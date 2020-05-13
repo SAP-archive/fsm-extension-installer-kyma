@@ -1,0 +1,71 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "fsm-extension-installer.fullname" . }}
+  labels:
+    app: {{ include "fsm-extension-installer.name" . }}
+    chart: {{ include "fsm-extension-installer.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "fsm-extension-installer.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "fsm-extension-installer.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "fsm-extension-installer.fullname" . }}
+      initContainers:
+        - name: {{ .Chart.Name }}-init
+          image: alpine:3.11.6
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["sh",  "/config/init-kubeconfig.sh", "/share/kubeconfig"]
+          volumeMounts:
+            - mountPath: /share
+              name: share
+            - mountPath: /config
+              name: config
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.internalPort }}
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /share
+              name: share
+          livenessProbe:
+            httpGet:
+              path: /api/fsm-extension-installer/v1/status
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api/fsm-extension-installer/v1/status
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: share
+          emptyDir: {}
+        - name: config
+          configMap:
+            name:  {{ include "fsm-extension-installer.fullname" . }}
