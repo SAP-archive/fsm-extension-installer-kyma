@@ -30,7 +30,7 @@ Make sure the following prerequisites are ready before you use this repository f
 There are no known issues for the moment.
 
 # How to obtain support
-In case you find a bug or need support, please open an issue [here](https://github.com/SAP-samples/fsm-extension-installer-for-kyma/issues/new).
+In case you find a bug or need support, please open an issue [here](https://github.com/SAP-samples/fsm-extension-installer-kyma/issues/new).
 
 # License
 Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved. This file is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](./LICENSE) file.
