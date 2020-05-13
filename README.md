@@ -61,7 +61,7 @@ In order to install extension installer in Kyma, you must fulfill the following 
 7. Deploy extension installer.
 
     Change the current directory into downloaded extension installer directory. Execute the command:
-    `helm install ./fsm-extension-installer-kyma/helm --name=<extension_installer_name> --set appName=<application_name> --set serviceInstanceName=<service_instance_name> --set kyma.verison=<kyma_version> --namespace=<kyma_namespace> --tls`
+    `helm install ./helm/fsm-extension-installer/ --name=<extension_installer_name> --set appName=<application_name> --set serviceInstanceName=<service_instance_name> --set kyma.verison=<kyma_version> --namespace=<kyma_namespace> --tls`
     
     And replace the variables as follows:
 
