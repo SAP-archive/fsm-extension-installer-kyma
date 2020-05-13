@@ -5,7 +5,7 @@ import {v4 as uuidv4} from 'uuid';
 import {Injectable, Logger, LoggerService} from '@nestjs/common';
 
 import {ChartConfigData} from '../utils/interfaces/chartconfigdata.interface';
-import {CHAR_CACHE_PATH} from '../utils/constants';
+import {CHART_CACHE_PATH} from '../utils/constants';
 
 @Injectable()
 export class ChartserviceService {
@@ -19,7 +19,7 @@ export class ChartserviceService {
         this.loggerService.log("ChartConfigData:");
         this.loggerService.log(chartConfigData);
         const repo = 'direct:' + chartConfigData.repository + (!empty(chartConfigData.ref) ? ('#' + chartConfigData.ref) : '');
-        const dest = CHAR_CACHE_PATH + uuidv4();
+        const dest = CHART_CACHE_PATH + uuidv4();
 
         try {
             return await new Promise((resolve, reject) => {
@@ -44,10 +44,10 @@ export class ChartserviceService {
     }
 
     private prepareStoredPath4Chart(): string {
-        if (!fse.existsSync(CHAR_CACHE_PATH)) {
-            fse.mkdirSync(CHAR_CACHE_PATH);
+        if (!fse.existsSync(CHART_CACHE_PATH)) {
+            fse.mkdirSync(CHART_CACHE_PATH);
         }
 
-        return CHAR_CACHE_PATH;
+        return CHART_CACHE_PATH;
     }
 }

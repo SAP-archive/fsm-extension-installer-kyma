@@ -1,14 +1,15 @@
 import {Injectable, Logger, LoggerService} from '@nestjs/common';
-import util = require('util');
 
-import {HelmDeleteOptions, HelmDeployOptions} from '../utils/interfaces/helmperformoptions.interface';
+import {HelmBaseOptions, HelmDeployOptions} from '../utils/interfaces/helmperformoptions.interface';
 import {HELM_BINARY_LOCATION, KUBE_CONFIG_LOCATION} from '../utils/constants';
-
-const exec = util.promisify(require('child_process').exec);
+import { CmdhelperService } from './../cmdhelper/cmdhelper.service';
 
 @Injectable()
 export class HelmserviceService {
     private readonly loggerService: LoggerService = new Logger(HelmserviceService.name, true);
+
+    constructor(private readonly cmdhelperService: CmdhelperService) {
+    }
 
     public async install(helmDeployOptions: HelmDeployOptions) {
         //Build helm command
@@ -18,7 +19,7 @@ export class HelmserviceService {
         return await this.execHelmCmd(cmdValue);
     }
 
-    public async delete(helmDeleteOptions: HelmDeleteOptions) {
+    public async delete(helmDeleteOptions: HelmBaseOptions) {
         //Build helm command
         const cmdValue = this.buildHelmCmd4Delete(helmDeleteOptions);
 
@@ -26,7 +27,19 @@ export class HelmserviceService {
         return await this.execHelmCmd(cmdValue);
     }
 
-    private buildHelmCmd4Install(helmDeployOptions: HelmDeployOptions): string {
+    public async exist(helmStatusOptions: HelmBaseOptions) {
+        let isExist = false;
+        const cmdValue = this.buildHelmCmd4Status(helmStatusOptions);
+
+        const result = await this.execHelmCmd(cmdValue);
+        if (result.stdout) {
+            isExist = true;
+        }
+
+        return isExist;
+    }
+
+    private buildHelmCmd4Install(helmDeployOptions: HelmDeployOptions): string[] {
         this.validateNotEmpty(helmDeployOptions.releaseName, 'releaseName');
         this.validateNotEmpty(helmDeployOptions.namespace, 'namespace');
 
@@ -53,10 +66,10 @@ export class HelmserviceService {
         //Set path to the kubeconfig file, default is '~/.kube/'
         installCommand += ` --kubeconfig ${KUBE_CONFIG_LOCATION}`;
 
-        return installCommand;
+        return installCommand.split(/(\s+)/).filter( e => e.trim().length > 0);
     }
 
-    private buildHelmCmd4Delete(helmDeleteOptions: HelmDeleteOptions): string {
+    private buildHelmCmd4Delete(helmDeleteOptions: HelmBaseOptions): string[] {
         this.validateNotEmpty(helmDeleteOptions.releaseName, 'releaseName');
         this.validateNotEmpty(helmDeleteOptions.namespace, 'namespace');
 
@@ -71,21 +84,37 @@ export class HelmserviceService {
         //Add release name
         uninstallCommand += `${helmDeleteOptions.releaseName}`;
 
-        return uninstallCommand;
+        return uninstallCommand.split(/(\s+)/).filter( e => e.trim().length > 0);
     }
 
-    private async execHelmCmd(cmdValue: string) {
+    private buildHelmCmd4Status(helmStatusOptions: HelmBaseOptions): string[] {
+        this.validateNotEmpty(helmStatusOptions.releaseName, 'releaseName');
+        this.validateNotEmpty(helmStatusOptions.namespace, 'namespace');
+
+        let statusCommand = `status ${helmStatusOptions.releaseName}`;
+
+        //Add namespace
+        statusCommand += ` -n ${helmStatusOptions.namespace}`;
+
+        //Set path to the kubeconfig file, default is '~/.kube/'
+        statusCommand += ` --kubeconfig ${KUBE_CONFIG_LOCATION}`;
+
+        //Add release name
+        statusCommand += ` --output json`;
+
+        return statusCommand.split(/(\s+)/).filter( e => e.trim().length > 0);
+    }
+
+    private async execHelmCmd(cmdValue: string[]) {
         //Perform helm install command
         const result = {stdout: null, stderr: null};
         try {
-            const response = await exec(`${HELM_BINARY_LOCATION} ${cmdValue}`);
-            result.stderr = response.stderr;
-            result.stdout = response.stdout;
-            this.loggerService.log(response.stdout.toString());
+            const response = await this.cmdhelperService.runCmd(`${HELM_BINARY_LOCATION}`, cmdValue)
+            result.stdout = response;
+            this.loggerService.log(response);
         } catch (error) {
-            result.stderr = error.stderr;
-            result.stdout = error.stdout;
-            this.loggerService.error(error.stderr.toString());
+            result.stderr = error;
+            this.loggerService.error(error);
         } finally {
             return result;
         }

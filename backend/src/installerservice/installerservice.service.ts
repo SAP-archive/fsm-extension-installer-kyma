@@ -4,7 +4,7 @@ import yamljs = require('yamljs');
 import {ExtensionCatalogService} from '../extensioncatalogservice/extensioncatalogservice.service';
 import {ChartserviceService} from '../chartservice/chartservice.service';
 import {HelmserviceService} from '../helmservice/helmservice.service';
-import {HelmDeleteOptions, HelmDeployOptions} from '../utils/interfaces/helmperformoptions.interface';
+import {HelmBaseOptions, HelmDeployOptions} from '../utils/interfaces/helmperformoptions.interface';
 import {DeployConfigData} from '../utils/interfaces/deployconfigdata.interface';
 import {UpdatedDeployData} from '../utils/interfaces/updateddeploydata.interface';
 import {DeployResultData} from '../utils/interfaces/deployresultdata.interface';
@@ -35,7 +35,7 @@ export class InstallerService {
         this.loggerService.log("Begin to uninstall extension application ...");
 
         await this.helmserviceService.delete({releaseName: requestData.releaseName,
-            namespace: requestData.namespace} as HelmDeleteOptions);
+            namespace: requestData.namespace} as HelmBaseOptions);
 
         this.loggerService.log('Successfully finish uninstall workflow.');
     }
@@ -65,13 +65,8 @@ export class InstallerService {
             this.loggerService.log(`Step${stepNum++}, Download helm chart from github repository.`);
             chartLocalPath = await this.chartserviceService.downloadChartFromGithubRepo(deployConfigData.chartConfigData);
 
-            await this.preUpgradeFlow(isUpgradeFlow, deployConfigData);
-            if (isUpgradeFlow) {
-                stepNum++;
-            }
-
             this.loggerService.log(`Step${stepNum++}, Using helm-cli to install extension app to Kyma cluster.`);
-            const result = await this.installOperation(chartLocalPath, deployConfigData);
+            const result = await this.installOperation(chartLocalPath, deployConfigData, isUpgradeFlow);
             const helmResult = JSON.parse(result);
 
             this.loggerService.log(`Step${stepNum++}, Get access url from Kyma cluster via virtualservice api-resource type.`);
@@ -128,7 +123,8 @@ export class InstallerService {
         await this.extensionCatalogService.addDeploymentResultToCatalog(deployResultData);
     }
 
-    private async installOperation(chartPath: string, deployConfigData: DeployConfigData) {
+    private async installOperation(chartPath: string, deployConfigData: DeployConfigData, isUpgradeFlow: boolean) {
+        //Build deployment options
         let helmChartPath = chartPath;
         if (deployConfigData.chartConfigData.path) {
             helmChartPath = helmChartPath + '/' + deployConfigData.chartConfigData.path;
@@ -139,6 +135,14 @@ export class InstallerService {
             namespace: deployConfigData.namespace,
             values: deployConfigData.parameterValues
         } as HelmDeployOptions;
+
+        //Enhancement that delete it if exist this helm release in Kyma cluster
+        await this.deleteOldHelmRelease({
+            releaseName: isUpgradeFlow ? deployConfigData.lastHelmContent.helmRelease : helmDeployOptions.releaseName,
+            namespace: isUpgradeFlow ? deployConfigData.lastHelmContent.namespace : helmDeployOptions.namespace
+        } as HelmBaseOptions);
+
+        //Install or upgrade new helm release
         this.loggerService.log("HelmDeployOptions:");
         this.loggerService.log(helmDeployOptions);
         const response = await this.helmserviceService.install(helmDeployOptions);
@@ -149,22 +153,11 @@ export class InstallerService {
         }
     }
 
-    private async preUpgradeFlow(isUpgradeFlow: boolean, deployConfigData: DeployConfigData) {
-        if (!isUpgradeFlow) {
-            return;
-        }
-
-        this.loggerService.log(`Step3, Delete old release via releaseName:${deployConfigData.lastHelmContent.helmRelease} 
-                and namespace:${deployConfigData.lastHelmContent.namespace} for upgrade workflow.`);
-
-        const helmDeleteOptions = {
-            releaseName: deployConfigData.lastHelmContent.helmRelease,
-            namespace: deployConfigData.lastHelmContent.namespace
-        } as HelmDeleteOptions;
-        const deletedResult = await this.helmserviceService.delete(helmDeleteOptions);
-
-        if (deletedResult.stderr) {
-            throw new Error(deletedResult.stderr);
+    private async deleteOldHelmRelease(helmOptions: HelmBaseOptions) {
+        this.loggerService.log(`Try to delete old release via releaseName:${helmOptions.releaseName} and 
+        namespace:${helmOptions.namespace} for upgrade workflow.`);
+        if (await this.helmserviceService.exist(helmOptions)) {
+            await this.helmserviceService.delete(helmOptions);
         }
     }
 

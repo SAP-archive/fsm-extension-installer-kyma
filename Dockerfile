@@ -1,10 +1,11 @@
 #Prepare node.js basic run environment
 FROM node:10-alpine3.11
 
+ARG HELM_VERSION="v3.2.0"
+ARG KUBE_LATEST_VERSION="v1.18.0"
+
 #Add ENVs
-ENV HELM_VERSION="v3.2.0" \
-    HELM_BINARY="/usr/local/bin/helm" \
-    KUBE_LATEST_VERSION="v1.18.0" \
+ENV HELM_BINARY="/usr/local/bin/helm" \
     KUBECTL_BINARY="/usr/local/bin/kubectl" \
     KUBECONFIG_PATH="/share/kubeconfig"
 
@@ -21,6 +22,8 @@ WORKDIR /usr/src/fsm-extension-installer-for-kyma
 #Copy source code and dependency packages
 COPY ./backend/release ./backend
 COPY ./backend/node_modules ./node_modules
+
+EXPOSE 8000
 
 #Run current application
 CMD ["node", "./backend/main.js"]

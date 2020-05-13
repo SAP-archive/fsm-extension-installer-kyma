@@ -1,5 +1,5 @@
 //Define saved helm-chart files path after download it from github.
-export const CHAR_CACHE_PATH: string = process.cwd() + '/chart_caches/';
+export const CHART_CACHE_PATH: string = (process.env.SHARE_DIR? process.env.SHARE_DIR: process.cwd()) +'/chart_caches/';
 
 //Define path of helm-cli and kubectl-cli, default need to initialization via ENN command in Dockerfile file.
 export const HELM_BINARY_LOCATION: string = process.env.HELM_BINARY || '/usr/local/bin/helm3';
@@ -9,4 +9,4 @@ export const KUBECTL_BINARY_LOCATION: string = process.env.KUBECTL_BINARY || '/u
 export const KYMA_SERVICE_CLASS_GATEWAY_URL: string = process.env.GATEWAY_URL || 'https://et.coresystems.net/cloud-extension-catalog-service';
 
 //Ensure to initialize this value('/share') via ENV command in Dockerfile
-export const KUBE_CONFIG_LOCATION: string = process.env.KUBECONFIG_PATH || '/Users/i076717/.kube/config';
+export const KUBE_CONFIG_LOCATION: string = process.env.KUBECONFIG_PATH || '~/.kube/config';

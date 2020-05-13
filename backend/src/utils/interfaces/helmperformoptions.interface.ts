@@ -1,12 +1,10 @@
 //Include: Install and Upgrade
-export interface HelmDeployOptions {
-    releaseName: string,
-    namespace: string,
-    chartLocation: string,
-    values: string
-};
-
-export interface HelmDeleteOptions {
+export interface HelmBaseOptions {
     releaseName: string,
     namespace: string
+}
+
+export interface HelmDeployOptions extends HelmBaseOptions{
+    chartLocation: string,
+    values: string
 };

@@ -25,7 +25,7 @@ export class ExtensionCatalogService {
                     'X-Company-Id': requestData.companyId
                 },
                 params: {
-                    expand: 'latestDeployResult'
+                    expand: 'latestSuccessfulDeployResult'
                 }
             } as AxiosRequestConfig;
 
@@ -43,10 +43,10 @@ export class ExtensionCatalogService {
                     path: deploymentObj.extension.artifactConfig.chart.path
                 } as ChartConfigData,
                 lastHelmContent: {
-                    helmRelease: (deploymentObj.latestDeployResult && deploymentObj.latestDeployResult.content)
-                        ? deploymentObj.latestDeployResult.content.helmRelease : null,
-                    namespace: (deploymentObj.latestDeployResult && deploymentObj.latestDeployResult.content)
-                        ? deploymentObj.latestDeployResult.content.namespace : null
+                    helmRelease: (deploymentObj.latestSuccessfulDeployResult && deploymentObj.latestSuccessfulDeployResult.content)
+                        ? deploymentObj.latestSuccessfulDeployResult.content.helmRelease : null,
+                    namespace: (deploymentObj.latestSuccessfulDeployResult && deploymentObj.latestSuccessfulDeployResult.content)
+                        ? deploymentObj.latestSuccessfulDeployResult.content.namespace : null
                 }
             } as DeployConfigData;
         } catch (error) {

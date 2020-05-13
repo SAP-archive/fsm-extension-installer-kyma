@@ -4,8 +4,8 @@
 
 image:
   repository: sapfsm/fsm-extension-installer-for-kyma
-  tag: 0.1.0
-  pullPolicy: IfNotPresent
+  tag: 0.1.5
+  pullPolicy: Always
 
 nameOverride: ""
 fullnameOverride: ""
@@ -51,3 +51,7 @@ appName: ""
 
 # Name of the service instance which is provisioned from the service class "Extension Catalog API"
 serviceInstanceName: ""
+
+kyma:
+  # The exact version number like "1.11.0", "1.11.0-rc1"
+  version: ""

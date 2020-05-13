@@ -34,6 +34,9 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SHARE_DIR
+              value: "/share"
           ports:
             - name: http
               containerPort: {{ .Values.service.internalPort }}

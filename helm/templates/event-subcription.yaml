@@ -1,69 +1,4 @@
-{{- /*
- apiVersion: kubeless.io/v1beta1
-kind: Function
-metadata:
-  name: {{ include "fsm-extension-installer.fullname" . }}-install-ev-receiver
-  namespace: {{ .Release.Namespace }}
-spec:
-  deployment:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: ""
-            resources: {}
-  deps: |-
-    {
-        "dependencies": {
-          "axios": "^0.19.0"
-        }
-    }
-  function: |-
-    const axios = require('axios');
-    module.exports = { main: function (event, context) {
-        return new Promise((resolve, reject) => {
-            let options = {
-                method: 'POST',
-                headers: {'content-type': 'application/json'},
-                data: event.data,
-                url: 'http://fsm-extension-installer/install'
-            }
-            axios(options).then(function(response) {
-                resolve(response);
-            }).catch(function(err) {
-                reject(err)
-            })
-        })
-    } }
-  function-content-type: text
-  handler: handler.main
-  runtime: nodejs8
-  timeout: ""
-  topic: exampleEvent
---- 
-*/ -}}
-
-{{- /*
- apiVersion: kubeless.io/v1beta1
-kind: Function
-metadata:
-  name: {{ include "fsm-extension-installer.fullname" . }}-upgrade-ev-receiver
-  namespace: {{ .Release.Namespace }}
-spec:
-  topic: extensioncatalog.extension.upgrade.requested
-  functionContentType: plaintext
-  size: XS
-  runtime: nodejs8
-  deps: "{\r\n  \"dependencies\": {\r\n    \"axios\": \"^0.19.0\"\r\n  }\r\n}"
-  function:  "const axios = require('axios');\n\nmodule.exports = { main: async function
-    (event, context) {\n    \n    console.log(event.data);\n    \n    let options
-    = {\n      method: 'POST',\n      headers: { 'content-type': 'application/json'
-    },\n      data: event.data,\n      url: 'http://fsm-extension-installer/upgrade',\n
-    \   };\n    \n    try {\n      await axios(options);\n    } catch (error) {\n
-    \     console.error(error);\n    }\n} };"
-  handler: handler.main 
-*/ -}}
-
+{{- if lt .Values.kyma.version "1.11" -}}
 apiVersion: eventing.kyma-project.io/v1alpha1
 kind: Subscription
 metadata:
@@ -99,3 +34,52 @@ spec:
   event_type_version: v1
   include_subscription_name_header: true
   source_id: {{ .Values.appName }}
+{{- end }}
+
+
+{{- if gt .Values.kyma.version "1.11" -}}
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: {{ include "fsm-extension-installer.fullname" . }}-install-ev-subscription
+  namespace: {{ .Release.Namespace }}
+spec:
+  broker: default
+  filter:
+    attributes:
+      eventtypeversion: v1
+      source: {{ .Values.appName }}
+      type: extensioncatalog.extension.install.requested
+  subscriber:
+    uri: http://{{ include "fsm-extension-installer.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.port }}/api/fsm-extension-installer/v1/install/
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: {{ include "fsm-extension-installer.fullname" . }}-uninstall-ev-subscription
+  namespace: {{ .Release.Namespace }}
+spec:
+  broker: default
+  filter:
+    attributes:
+      eventtypeversion: v1
+      source: {{ .Values.appName }}
+      type: extensioncatalog.extension.uninstall.requested
+  subscriber:
+    uri: http://{{ include "fsm-extension-installer.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.port }}/api/fsm-extension-installer/v1/uninstall/
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: {{ include "fsm-extension-installer.fullname" . }}-upgrade-ev-subscription
+  namespace: {{ .Release.Namespace }}
+spec:
+  broker: default
+  filter:
+    attributes:
+      eventtypeversion: v1
+      source: {{ .Values.appName }}
+      type: extensioncatalog.extension.upgrade.requested
+  subscriber:
+    uri: http://{{ include "fsm-extension-installer.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.port }}/api/fsm-extension-installer/v1/upgrade/
+{{- end }}

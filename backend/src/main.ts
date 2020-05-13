@@ -9,7 +9,7 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 
-  await app.listen(8000);
+  await app.listen(8000, "0.0.0.0");
 }
 
 bootstrap();

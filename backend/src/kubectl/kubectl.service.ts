@@ -1,12 +1,14 @@
 import {Injectable, Logger, LoggerService} from '@nestjs/common';
-import util = require('util');
 import {KUBECTL_BINARY_LOCATION, KUBE_CONFIG_LOCATION} from '../utils/constants';
 
-const exec = util.promisify(require('child_process').exec);
+import { CmdhelperService } from '../cmdhelper/cmdhelper.service';
 
 @Injectable()
 export class KubectlService {
     private readonly loggerService: LoggerService = new Logger(KubectlService.name, true);
+
+    constructor(private readonly cmdhelperService: CmdhelperService) {
+    }
 
     public async getAccessUrlFromKymaByAppName(appName: string, namespace: string): Promise<string> {
         const cmdValue = this.buildKubectlCmd4Get('virtualservices', appName, namespace);
@@ -21,28 +23,26 @@ export class KubectlService {
         return accessUrl;
     }
 
-    private buildKubectlCmd4Get(kindType: string, value: string, namespace: string): string {
+    private buildKubectlCmd4Get(kindType: string, value: string, namespace: string): string[] {
         this.validateNotEmpty(kindType, 'kindType');
         this.validateNotEmpty(value, 'kindValue');
         this.validateNotEmpty(namespace, 'namespace');
 
         const getCmdValue = `get ${kindType} ${value} -n ${namespace} --kubeconfig=${KUBE_CONFIG_LOCATION} --output=json`;
 
-        return getCmdValue;
+        return getCmdValue.split(/(\s+)/).filter( e => e.trim().length > 0);
     }
 
-    private async execKubectlCmd(cmdValue: string) {
+    private async execKubectlCmd(cmdValue: string[]) {
         //Perform helm install command
         const result = {stdout: null, stderr: null};
         try {
-            const response = await exec(`${KUBECTL_BINARY_LOCATION} ${cmdValue}`);
-            result.stderr = response.stderr;
-            result.stdout = response.stdout;
-            this.loggerService.log(response.stdout.toString());
+            const response = await this.cmdhelperService.runCmd(`${KUBECTL_BINARY_LOCATION}`, cmdValue)
+            result.stdout = response;
+            this.loggerService.log(response);
         } catch (error) {
-            result.stderr = error.stderr;
-            result.stdout = error.stdout;
-            this.loggerService.error(error.stderr.toString());
+            result.stderr = error;
+            this.loggerService.error(error);
         } finally {
             return result;
         }
