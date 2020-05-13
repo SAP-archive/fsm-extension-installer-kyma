@@ -54,15 +54,17 @@ In order to install extension installer in Kyma, you must fulfill the following 
  
     `kubectl --kubeconfig /custom/path/kubeconfig.yml`
      
-    If you prefer to have only one config file for all your k8s context, you could refer this documentation.
+    If you prefer to have only one config file for all your k8s context, you could refer this [documentation](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/).
 
 6. Configure helm in order to manage resource in Kyma. See the [reference](https://kyma-project.io/docs/#installation-use-helm).
 
 7. Deploy extension installer.
+
     Change the current directory into downloaded extension installer directory. Execute the command:
     `helm install ./fsm-extension-installer-kyma/helm --name=<extension_installer_name> --set appName=<application_name> --set serviceInstanceName=<service_instance_name> --set kyma.verison=<kyma_version> --namespace=<kyma_namespace> --tls`
     
     And replace the variables as follows:
+
     `<extension_installer_name>`: your extension installer name
 
     `<application_name>`: the one you created in step 3 of Prerequisites section
