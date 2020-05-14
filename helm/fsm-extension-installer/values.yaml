@@ -4,7 +4,7 @@
 
 image:
   repository: sapfsm/fsm-extension-installer-for-kyma
-  tag: 0.1.5
+  tag: 0.1.0
   pullPolicy: Always
 
 nameOverride: ""
@@ -54,4 +54,4 @@ serviceInstanceName: ""
 
 kyma:
   # The exact version number like "1.11.0", "1.11.0-rc1"
-  version: ""
+  version: "1.11.0"
