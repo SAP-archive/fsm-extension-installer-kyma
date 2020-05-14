@@ -54,4 +54,4 @@ serviceInstanceName: ""
 
 kyma:
   # The exact version number like "1.11.0", "1.11.0-rc1"
-  version: "1.11.0"
+  version: ""
