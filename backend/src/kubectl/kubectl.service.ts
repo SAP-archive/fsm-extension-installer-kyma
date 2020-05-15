@@ -18,6 +18,8 @@ export class KubectlService {
         if (result.stdout) {
             const jsonResult = JSON.parse(result.stdout);
             accessUrl = 'https://' + jsonResult.spec.hosts[0];
+        } else if (result.stderr) {
+            throw new Error(result.stderr);
         }
 
         return accessUrl;
