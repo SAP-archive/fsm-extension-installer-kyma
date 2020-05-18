@@ -1,26 +1,6 @@
 # fsm-extension-installer-kyma
-Use this sample to deploy, build, and refine the integration between an SAP FSM extension application and a Kyma system. It can be cloned and enhanced with logic to meet specific business needs.
 
-# Description
-The Customers can use this sample to quickly deploy the SAP FSM extension application on Kyma system, It can accelerate the building and refinement of the integration between the SAP FSM system and Kyma system. The Customers can clone it and enhance it with their own logic to meet their own specific needs if they want. Thus enabling this integration to be continuously improved with the use of customers.
-
-# Requirements
-Make sure the following prerequisites are ready before you use this repository for your extension application:
-* Install Git CLI locally via https://git-scm.com/downloads
-* Have an account in public docker registry, such as Docker Hub
-* Install Docker Desktop locally via https://www.docker.com/get-started, and sign in the docker registry from Docker Desktop GUI or Docker Desktop CLI
-* Install helm CLI locally and configure it via https://kyma-project.io/docs/#installation-use-helm
-* Install Node.js runtime on your local computer via https://nodejs.org/en/download/
-
-# How to build docker image
-* Ensure that the docker server is running on your local computer;
-* Enter to 'backend' folder and run below command:
-  1. `npm run build:prod`
-  2. Note: Please firstly delete node_modules folder if you find have node_modules folder on this current path.
-* Back to root path, you can find 'Dockerfile' file, then run below command to build docker image:
-  `docker build -t ${docker_registry}/${application_name}:${application_version} .`
-* Run below command to view new docker image:
-  `docker images | grep '${application_name}'`
+Customers can use this sample to quickly deploy the SAP FSM extension application on Kyma system. It can accelerate the building and refinement of the integration between the SAP FSM system and Kyma system. Customers can clone and enhance it with their own logic to meet their own specific needs, which enables the integration to be continuously improved with the use of customers.
 
 # How to set up extension installer
 ## Prerequisites
@@ -28,7 +8,8 @@ In order to install extension installer in Kyma, you must fulfill the following 
 
 1. You must have [k8s CLI](https://kubernetes.io/docs/tasks/tools/install-kubectl) installed.
 2. You must have [Helm 2 CLI](https://v2.helm.sh/docs/using_helm/#installing-helm) installed.
-3. You must have set up Kyma connection with FSM and created an **Application** in Kyma by following the [guide](https://docs.coresystems.net/extensions-ui-plugins/cloud-platform-extension-factory-integration.html).
+3. You must have [Git CLI](https://git-scm.com/downloads) installed.
+4. You must have set up Kyma connection with FSM and created an **Application** in Kyma by following the [guide](https://docs.coresystems.net/extensions-ui-plugins/cloud-platform-extension-factory-integration.html).
 
 ## Installation Process
 1. Open the Kyma console and create a **Namespace** where you want to deploy the extension installer.
@@ -58,10 +39,12 @@ In order to install extension installer in Kyma, you must fulfill the following 
 
 6. Configure helm in order to manage resource in Kyma. See the [reference](https://kyma-project.io/docs/#installation-use-helm).
 
-7. Deploy extension installer.
+7. Download extension installer with [Git CLI](https://git-scm.com/downloads) from this [repository](https://github.com/SAP-samples/fsm-extension-installer-kyma).
+
+8. Deploy extension installer.
 
     Change the current directory into downloaded extension installer directory. Execute the command:
-    `helm install ./helm/fsm-extension-installer/ --name=<extension_installer_name> --set appName=<application_name> --set serviceInstanceName=<service_instance_name> --set kyma.verison=<kyma_version> --namespace=<kyma_namespace> --tls`
+    `helm install ./helm/fsm-extension-installer/ --name=<extension_installer_name> --set appName=<application_name> --set serviceInstanceName=<service_instance_name> --set kyma.version=<kyma_version> --namespace=<kyma_namespace> --tls`
     
     And replace the variables as follows:
 
@@ -75,10 +58,13 @@ In order to install extension installer in Kyma, you must fulfill the following 
 
     `<kyma_namespace>`: the one you created step 1
 
+9. [Optional] Install the latest version of extension installer as needed by following these steps:
 
-# Limitations
-1. Private docker registry is not be supported in the Helm Charts.
-2. Private github repository is not be supported for Extension Application.
+    a. Delete installed extension installer from Kyma with command:
+
+    `helm delete --purge <extension_installer_name> --tls`
+
+    b. Reinstall the extension installer with command described in step 8.
 
 # Known Issues
 There are no known issues for the moment.
