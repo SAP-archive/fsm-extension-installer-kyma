@@ -33,7 +33,7 @@ In order to install extension installer in Kyma, you must fulfill the following 
 
     a. Select **Catalog** in left navigation sidebar. Then switch to **Add-Ons** and navigate to the addon that you registed in step 4.
     
-    b. Click **Add** to provision a addon instance. Enter an addon instance name, choose "Default" plan, enter application name that you created in prerequisites, enter service instance name that you created in step 3, enter the exact Kyma version, then click **Create**. You can see this new addon instance is displayed with "PROVISIONING" status and it changes to "RUNNING" status finally.
+    b. Click **Add** to provision a addon instance. Enter an addon instance name, choose "Default" plan, enter application name that you created in section prerequisites, enter service instance name that you created in step 3, enter the exact Kyma version, then click **Create**. You can see this new addon instance is displayed with "PROVISIONING" status and it changes to "RUNNING" status finally.
 
 6. [Optional] Install the latest version of extension installer as needed by following these steps:
 

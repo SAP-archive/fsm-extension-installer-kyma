@@ -24,3 +24,4 @@ Make sure the following prerequisites are ready before you use this repository f
 * Create new folder plans/default under the folder "fsm-extension-installer-${version}", create files meta.yaml and create-instance-schema.json following https://kyma-project.io/docs/components/helm-broker/#details-create-addons-plans-directory 
 * Create new file meta.yaml under the folder "fsm-extension-installer-${version}" following https://kyma-project.io/docs/components/helm-broker/#details-create-addons-meta-yaml-file
 * Update the field "version" in [index.yaml](../addons/index.yaml)
+* Push the Git repository
