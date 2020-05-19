@@ -28,7 +28,7 @@ In order to install extension installer in Kyma, you must fulfill the following 
     
     a. Select **Addons** in left navigation sidebar.
 
-    b. Click **Add New Configuration**. Enter a addon name, and also `github.com/SAP-samples/fsm-extension-installer-kyma/index.yaml` as Urls, click **Add**. You can see this new addon is displayed with "Ready" status.
+    b. Click **Add New Configuration**. Enter a addon name, and also `github.com/SAP-samples/fsm-extension-installer-kyma/addons/index.yaml` as Urls, click **Add**. You can see this new addon is displayed with "Ready" status.
 5. Provisioning extension installer addon instance.
 
     a. Select **Catalog** in left navigation sidebar. Then switch to **Add-Ons** and navigate to the addon that you registed in step 4.
