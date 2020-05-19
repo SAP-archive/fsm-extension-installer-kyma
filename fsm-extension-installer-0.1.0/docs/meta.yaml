@@ -1,0 +1,9 @@
+docs:
+  - template:
+      displayName: "Documentation for FSM Extension Installer"
+      description: "Overall documentation"
+      sources:
+        - type: markdown
+          name: markdown-files
+          mode: single
+          url: https://github.com/SAP-samples/fsm-extension-installer-kyma/README.md

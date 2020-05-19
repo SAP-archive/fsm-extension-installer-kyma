@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fsm-extension-installer.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  init-kubeconfig.sh: |-
+    #!/bin/sh
+
+    dest="$1"
+    if [[ -z "$dest" ]]; then
+      echo "please specify the destination where kubeconfig file will be writen to"
+      exit
+    fi
+
+    # alpine image has a version of base64 which doesn't provide the -w option, we have to force update it
+    # see: https://stackoverflow.com/questions/57920449/the-error-base64-unrecognized-option-w-is-output-in-alpine-linux
+    apk add --update coreutils
+    ca=`cat /var/run/secrets/kubernetes.io/serviceaccount/ca.crt | base64 -w 0`
+    namespace=`cat /var/run/secrets/kubernetes.io/serviceaccount/namespace`
+    token=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`
+
+    echo "apiVersion: v1
+    clusters:
+    - cluster:
+        certificate-authority-data: ${ca}
+        server: https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}
+      name: this-cluster
+    contexts:
+    - context:
+        cluster: this-cluster
+        namespace: ${namespace}
+        user: this-user
+      name: this-context
+    current-context: this-context
+    kind: Config
+    preferences: {}
+    users:
+    - name: this-user
+      user:
+        token: ${token}" > $dest
+
+  
