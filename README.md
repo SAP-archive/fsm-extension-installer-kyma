@@ -18,28 +18,35 @@ In order to install extension installer in Kyma, you must fulfill the following 
 
     c. Select **Extension Catalog API**. Then save it.
 3. Create service instance for **Application** that you have created in Kyma.
-    
+   
     a. Navigate to the namespace that you created in step 1.
 
     b. Select **Catalog** in left navigation sidebar. Then switch to **Services** and navigate to the service that corresponds to the **Application** that you have created in Kyma.
 
     c. Click **Add once** to provision a service instance. Enter a service instance name and save it. And you can see your instance in Kyma console under **Instance**.
 4. Register extension installer addon.
-    
+   
     a. Select **Addons** in left navigation sidebar.
 
-    b. Click **Add New Configuration**. Enter a addon name, and also `github.com/SAP-samples/fsm-extension-installer-kyma/addons/index.yaml` as Urls, click **Add**. You can see this new addon is displayed with "Ready" status.
+    b. Click **Add New Configuration** and fill out the following data. Then click **Add** and you can see this new addon is displayed with "Ready" status.
+       - Enter an addon name.
+       - Enter `github.com/SAP-samples/fsm-extension-installer-kyma/addons/index.yaml` as Urls.
 5. Provisioning extension installer addon instance.
 
-    a. Select **Catalog** in left navigation sidebar. Then switch to **Add-Ons** and navigate to the addon that you registed in step 4.
+    a. Select **Catalog** in left navigation sidebar. Then switch to **Add-Ons** and navigate to the addon that you registered in step 4.
     
-    b. Click **Add** to provision a addon instance. Enter an addon instance name, choose "Default" plan, enter application name that you created in section prerequisites, enter service instance name that you created in step 3, enter the exact Kyma version, then click **Create**. You can see this new addon instance is displayed with "PROVISIONING" status and it changes to "RUNNING" status finally.
+    b. Click **Add** to provision an addon instance and fill out the following data. Then click **Create** and you can see this new addon instance is displayed with "PROVISIONING" status and it changes to "RUNNING" status finally.
+       - Enter an addon instance name.
+       - Choose Default plan.
+       - Enter application name that you created in section Prerequisites.
+       - Enter service instance name that you created in step 3.
+       - Enter the exact Kyma version.
 
 6. [Optional] Install the latest version of extension installer as needed by following these steps:
 
-    a. Delete the extension installer addon instance which was provisioned in step 5.
+    a. Delete the extension installer addon instance that was provisioned in step 5.
 
-    b. Delete the extension installer addon which was registered in step 4.
+    b. Delete the extension installer addon that was registered in step 4.
 
     c. Redo step 4 and step 5.
 
