@@ -6,7 +6,7 @@ Make sure the following prerequisites are ready before you use this repository f
 * Install Node.js runtime on your local computer via https://nodejs.org/en/download/
 
 # How to build docker image
-* Ensure that the docker demeon is running on your local computer
+* Ensure that the docker daemon is running on your local computer
 * Enter to 'backend' folder and run below command:
   1. `npm run build:prod`
   2. Note: Please firstly delete node_modules folder if you find have node_modules folder on this current path.
