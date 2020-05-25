@@ -19,4 +19,4 @@ Make sure the following prerequisites are ready before you use this repository f
 ## Release new version
 * Go to the folder /internal and Run the command `sh ./release.sh`
 
-## Check in and push the docker registry
+## Check in and push the git registry
