@@ -1,0 +1,5 @@
+name: default
+id: ${uuid}
+description: "Default plan"
+displayName: Default
+free: true
