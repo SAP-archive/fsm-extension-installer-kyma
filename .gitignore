@@ -2,7 +2,7 @@
 backend/release
 backend/node_modules
 backend/chart_caches
-backend/package-lock.json
+# backend/package-lock.json
 
 # Logs
 logs
