@@ -41,7 +41,7 @@ In order to install extension installer in Kyma, you must fulfill the following 
 
 5. Provisioning extension installer addon instance.
 
-   a. Select **Catalog** in left navigation sidebar. Then switch to **Add-Ons** and navigate to the addon that you registered in step 4.
+   a. Select **Catalog** in left navigation sidebar. Then switch to **Add-Ons** and select the addon "FSM Extension Installer For Kyma".
 
    b. Click **Add** to provision an addon instance and fill out the following data. Then click **Create** and you can see this new addon instance is displayed with "PROVISIONING" status and it changes to "RUNNING" status finally.
 
