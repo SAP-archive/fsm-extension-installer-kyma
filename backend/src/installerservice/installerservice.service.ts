@@ -1,6 +1,7 @@
 import { Injectable, LoggerService, Logger } from '@nestjs/common';
 import yamljs = require('yamljs');
-
+import search = require('recursive-search');
+import path = require('path');
 import {ExtensionCatalogService} from '../extensioncatalogservice/extensioncatalogservice.service';
 import {ChartserviceService} from '../chartservice/chartservice.service';
 import {HelmserviceService} from '../helmservice/helmservice.service';
@@ -42,9 +43,10 @@ export class InstallerService {
 
     private getReleaseName(chartPath: string): string {
         try {
-            const chartObject = yamljs.load(chartPath + '/Chart.yaml');
+            const chartFile = `${chartPath}/Chart.yaml`;
+            const chartObject = yamljs.load(chartFile);
             if (!chartObject || !chartObject.name) {
-                throw new Error(`Chart name is required;`);
+                throw new Error(`Name is required in Chart.yaml file.`);
             }
 
             return chartObject.name;
@@ -55,7 +57,7 @@ export class InstallerService {
     }
 
     private async deployExtension(requestData: RequestInstallData, isUpgradeFlow: boolean) {
-        let chartLocalPath: string = null;
+        let repoLocalPath: string = null;
         try {
             let stepNum = 1;
             this.loggerService.log(`Step${stepNum++}, Get deployment configuration data via deploymentId from Extension Catalog service.`);
@@ -63,10 +65,10 @@ export class InstallerService {
                 await this.extensionCatalogService.getDeploymentConfigData(requestData);
 
             this.loggerService.log(`Step${stepNum++}, Download helm chart from github repository.`);
-            chartLocalPath = await this.chartserviceService.downloadChartFromGithubRepo(deployConfigData.chartConfigData);
+            repoLocalPath = await this.chartserviceService.downloadChartFromGithubRepo(deployConfigData.chartConfigData);
 
             this.loggerService.log(`Step${stepNum++}, Using helm-cli to install extension app to Kyma cluster.`);
-            const result = await this.installOperation(chartLocalPath, deployConfigData, isUpgradeFlow);
+            const result = await this.installOperation(repoLocalPath, deployConfigData, isUpgradeFlow);
             const helmResult = JSON.parse(result);
 
             this.loggerService.log(`Step${stepNum++}, Get access url from Kyma cluster via virtualservice api-resource type.`);
@@ -93,7 +95,7 @@ export class InstallerService {
             throw error;
         } finally {
             //Clean up current download helm-chart folder
-            this.chartserviceService.removeDownloadedPath(chartLocalPath);
+            this.chartserviceService.removeDownloadedPath(repoLocalPath);
         }
     }
 
@@ -123,12 +125,9 @@ export class InstallerService {
         await this.extensionCatalogService.addDeploymentResultToCatalog(deployResultData);
     }
 
-    private async installOperation(chartPath: string, deployConfigData: DeployConfigData, isUpgradeFlow: boolean) {
+    private async installOperation(repoPath: string, deployConfigData: DeployConfigData, isUpgradeFlow: boolean) {
         //Build deployment options
-        let helmChartPath = chartPath;
-        if (deployConfigData.chartConfigData.path) {
-            helmChartPath = helmChartPath + '/' + deployConfigData.chartConfigData.path;
-        }
+        const helmChartPath = await this.getHelmChartsPath(repoPath, deployConfigData.chartConfigData.path);
         const helmDeployOptions = {
             releaseName: this.getReleaseName(helmChartPath),
             chartLocation: helmChartPath,
@@ -148,7 +147,7 @@ export class InstallerService {
         const response = await this.helmserviceService.install(helmDeployOptions);
         if (response.stderr) {
             throw new Error(response.stderr);
-        }else {
+        } else {
             return response.stdout;
         }
     }
@@ -188,5 +187,21 @@ export class InstallerService {
         } else {
             return (accessUrl && accessUrl !== '') ? 'INSTALLED' : 'INSTALL_FAILED';
         }
+    }
+
+    private async getHelmChartsPath(rootPath: string, chartConfigDataPath: string) {
+        let helmChartPath: string;
+        if (chartConfigDataPath) {
+            helmChartPath = rootPath + '/' + chartConfigDataPath;
+        } else {
+            const results = search.recursiveSearchSync('Chart.yaml', rootPath);
+            if (results.length === 0) {
+                throw new Error(`Chart.yaml file is required.`);
+            }
+
+            helmChartPath = path.dirname(results[0]);
+        }
+
+        return helmChartPath;
     }
 }

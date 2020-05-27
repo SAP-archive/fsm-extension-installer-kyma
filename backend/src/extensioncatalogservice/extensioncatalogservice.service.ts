@@ -34,7 +34,8 @@ export class ExtensionCatalogService {
             this.loggerService.log("DeploymentConfigData:");
             this.loggerService.log(deploymentObj);
             return {
-                namespace: deploymentObj.deploymentConfig.namespace,
+                // Enhancement: set namespace to 'default' if user not fill namespace value
+                namespace: deploymentObj.deploymentConfig.namespace ? deploymentObj.deploymentConfig.namespace : 'default',
                 parameterValues: deploymentObj.deploymentConfig.values,
                 appVersion: deploymentObj.extension.version,
                 chartConfigData: {
