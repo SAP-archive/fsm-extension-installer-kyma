@@ -44,7 +44,7 @@ export class HelmserviceService {
         this.validateNotEmpty(helmDeployOptions.namespace, 'namespace');
 
         //Add --set value
-        let installCommand = `install --set kyma.apiv1.enabled=true `
+        let installCommand = `install --set kyma.apiv1.enabled=true `;
         installCommand += this.getConfigValues(helmDeployOptions.values);
 
         //Add --atomic, --timeout --output
