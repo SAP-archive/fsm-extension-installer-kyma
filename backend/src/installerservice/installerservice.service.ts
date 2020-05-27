@@ -127,7 +127,7 @@ export class InstallerService {
 
     private async installOperation(repoPath: string, deployConfigData: DeployConfigData, isUpgradeFlow: boolean) {
         //Build deployment options
-        const helmChartPath = await this.getHelmChartsPath(repoPath, deployConfigData.chartConfigData.path);
+        const helmChartPath = this.getHelmChartsPath(repoPath, deployConfigData.chartConfigData.path);
         const helmDeployOptions = {
             releaseName: this.getReleaseName(helmChartPath),
             chartLocation: helmChartPath,
@@ -189,7 +189,7 @@ export class InstallerService {
         }
     }
 
-    private async getHelmChartsPath(rootPath: string, chartConfigDataPath: string) {
+    private getHelmChartsPath(rootPath: string, chartConfigDataPath: string) {
         let helmChartPath: string;
         if (chartConfigDataPath) {
             helmChartPath = rootPath + '/' + chartConfigDataPath;
