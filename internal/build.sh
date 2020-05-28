@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e 
 . ../VERSIONINFO
 
 echo "Start to build the extension installler"

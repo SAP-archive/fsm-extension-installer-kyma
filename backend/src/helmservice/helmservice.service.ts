@@ -44,13 +44,19 @@ export class HelmserviceService {
         this.validateNotEmpty(helmDeployOptions.namespace, 'namespace');
 
         //Add --set value
-        let installCommand = `install --set kyma.apiv1.enabled=true `;
+        //kyma.apiv1 is kept in order to support the extension app generated from old scaffold
+        let installCommand = `install --set kyma.apiv1.enabled=true --set kyma.api.enabled=true `;
         installCommand += this.getConfigValues(helmDeployOptions.values);
 
         //Add --atomic, --timeout --output
         installCommand += ' --atomic';
         installCommand += ' --timeout 5m0s';
         installCommand += ' --output json ';
+
+        //Add kyma version
+        if (process.env.KYMA_VER) {
+            installCommand += ` --set ${process.env.KYMA_VER} `;
+        }
 
         //Add release name
         const releaseName = helmDeployOptions.releaseName.toLowerCase();
