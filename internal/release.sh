@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 . ../VERSIONINFO
 
 shopt -s expand_aliases
