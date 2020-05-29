@@ -55,7 +55,7 @@ export class HelmserviceService {
 
         //Add kyma version
         if (process.env.KYMA_VER) {
-            installCommand += ` --set ${process.env.KYMA_VER} `;
+            installCommand += ` --set kyma.version=${process.env.KYMA_VER} `;
         }
 
         //Add release name
