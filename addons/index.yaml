@@ -3,4 +3,4 @@ entries:
   fsm-extension-installer:
     - name: fsm-extension-installer
       description: "A simple addon to enable installing FSM extension on Kyma"
-      version: 0.2.0
+      version: 0.2.1
