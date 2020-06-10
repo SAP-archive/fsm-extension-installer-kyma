@@ -4,6 +4,7 @@
     "target": "es2018",
     "lib": ["es2018"],
     "outDir": "./release",
+    "baseUrl": "./",
     "noImplicitAny": false,
     "strictNullChecks": false,
     "noImplicitThis": true,
@@ -22,7 +23,11 @@
     "allowSyntheticDefaultImports": false,
     "forceConsistentCasingInFileNames": true,
     "noImplicitUseStrict": true,
-    "diagnostics": true
+    "diagnostics": true,
+    "sourceMap": true,
+    "incremental": true,
+    "declaration": true,
+    "removeComments": true
   },
   "include": [
     "src/**/*",
