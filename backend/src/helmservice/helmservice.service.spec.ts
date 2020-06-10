@@ -1,18 +1,123 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HelmserviceService } from './helmservice.service';
+import {CmdhelperServiceModule} from '../cmdhelper/cmdhelper.module';
+import {CmdhelperService} from '../cmdhelper/cmdhelper.service';
+import {HelmBaseOptions, HelmDeployOptions} from "../utils/interfaces/helmperformoptions.interface";
 
 describe('HelmserviceService', () => {
   let service: HelmserviceService;
+  let cmdhelperService: CmdhelperService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [CmdhelperServiceModule],
       providers: [HelmserviceService],
     }).compile();
 
     service = module.get<HelmserviceService>(HelmserviceService);
+    cmdhelperService = module.get<CmdhelperService>(CmdhelperService);
+
+    process.env.KYMA_VER = '1.12.0';
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('should be successfully invoked for install', async () => {
+    const helmDeployOptions = {
+      releaseName: 'test-extension',
+      namespace: 'default',
+      chartLocation: 'helm/Chart.yaml',
+      values: Object.assign({imagePullPolicy: 'Always'})
+    } as HelmDeployOptions;
+
+    const response = 'install is successful';
+    const spy4runCmd = jest.spyOn(cmdhelperService, 'runCmd').mockImplementationOnce(() => Promise.resolve(response));
+
+    const result = await service.install(helmDeployOptions);
+    expect(result.stderr).toBe(null);
+    expect(result.stdout).toBe(response);
+    expect(spy4runCmd).toBeCalled();
+  });
+
+  it('should throw exception for install due to not namespace', async () => {
+    const helmDeployOptions = {
+      releaseName: 'test-extension',
+      namespace: null,
+      chartLocation: 'helm/Chart.yaml',
+      values: Object.assign({imagePullPolicy: 'Always'})
+    } as HelmDeployOptions;
+
+    await expect(service.install(helmDeployOptions)).rejects.toThrow('namespace is required');
+  });
+
+  it('should throw exception for install due to failure of runCmd method', async () => {
+    const helmDeployOptions = {
+      releaseName: 'test-extension',
+      namespace: 'default',
+      chartLocation: 'helm/Chart.yaml',
+      values: Object.assign({imagePullPolicy: 'Always'})
+    } as HelmDeployOptions;
+
+    delete process.env.KYMA_VER;
+
+    const error4runCmd = new Error('runCmd error');
+    const spy4runCmd = jest.spyOn(cmdhelperService, 'runCmd').mockImplementationOnce(() => Promise.reject(error4runCmd));
+
+    const result = await service.install(helmDeployOptions);
+    expect(result.stderr).toBe(error4runCmd);
+    expect(spy4runCmd).toBeCalled();
+  });
+
+  it('should be successfully invoked for delete', async () => {
+    const helmDeleteOptions = {
+      releaseName: 'test-extension',
+      namespace: 'default'
+    } as HelmBaseOptions;
+
+    const response = 'delete is successful';
+    const spy4runCmd = jest.spyOn(cmdhelperService, 'runCmd').mockImplementationOnce(() => Promise.resolve(response));
+
+    const result = await service.delete(helmDeleteOptions);
+    expect(result.stderr).toBe(null);
+    expect(result.stdout).toBe(response);
+    expect(spy4runCmd).toBeCalled();
+  });
+
+  it('should throw exception for delete, due to failure of runCmd method', async () => {
+    const helmDeleteOptions = {
+      releaseName: 'test-extension',
+      namespace: 'default'
+    } as HelmBaseOptions;
+
+    const error4runCmd = new Error('runCmd error for helm delete operating');
+    const spy4runCmd = jest.spyOn(cmdhelperService, 'runCmd').mockImplementationOnce(() => Promise.reject(error4runCmd));
+
+    const result = await service.delete(helmDeleteOptions);
+    expect(result.stderr).toBe(error4runCmd);
+    expect(spy4runCmd).toBeCalled();
+  });
+
+  it('should be successfully invoked for exist', async () => {
+    const helmStatusOptions = {
+      releaseName: 'test-extension',
+      namespace: 'default'
+    } as HelmBaseOptions;
+
+    const response = 'checking is successful';
+    const spy4runCmd = jest.spyOn(cmdhelperService, 'runCmd').mockImplementationOnce(() => Promise.resolve(response));
+
+    await expect(service.exist(helmStatusOptions)).resolves.toBe(true);
+    expect(spy4runCmd).toBeCalled();
+  });
+
+  it('should be successfully invoked for exist, but release is not existing', async () => {
+    const helmStatusOptions = {
+      releaseName: 'test-extension',
+      namespace: 'default'
+    } as HelmBaseOptions;
+
+    const error = new Error('checking is successful, but release is not exist');
+    const spy4runCmd = jest.spyOn(cmdhelperService, 'runCmd').mockImplementationOnce(() => Promise.reject(error));
+
+    await expect(service.exist(helmStatusOptions)).resolves.toBe(false);
+    expect(spy4runCmd).toBeCalled();
   });
 });
