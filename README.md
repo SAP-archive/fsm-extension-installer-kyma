@@ -53,7 +53,7 @@ In order to install extension installer in Kyma, you must fulfill the following 
       - Enter service instance name that you created in step 3.
       - Enter the exact Kyma version.
 
-6. [Optional] Install the latest version of extension installer as needed by following these steps:
+6. [Optional] Upgrade to the latest version of extension installer as needed by following these steps:
 
    a. Delete the extension installer addon instance that was provisioned in step 5.
 
