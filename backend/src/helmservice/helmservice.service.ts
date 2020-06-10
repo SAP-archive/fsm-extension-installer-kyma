@@ -1,7 +1,7 @@
 import {Injectable, Logger, LoggerService} from '@nestjs/common';
 
 import {HelmBaseOptions, HelmDeployOptions} from '../utils/interfaces/helmperformoptions.interface';
-import {HELM_BINARY_LOCATION, KUBE_CONFIG_LOCATION} from '../utils/constants';
+import {HELM_BINARY_LOCATION, KUBE_CONFIG_LOCATION, KYMA_VER} from '../utils/constants';
 import { CmdhelperService } from './../cmdhelper/cmdhelper.service';
 
 @Injectable()
@@ -54,8 +54,8 @@ export class HelmserviceService {
         installCommand += ' --output json ';
 
         //Add kyma version
-        if (process.env.KYMA_VER) {
-            installCommand += ` --set kyma.version=${process.env.KYMA_VER} `;
+        if (KYMA_VER) {
+            installCommand += ` --set kyma.version=${KYMA_VER} `;
         }
 
         //Add release name
