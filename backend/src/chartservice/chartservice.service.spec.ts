@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import fse = require('fs-extra');
 import { ChartserviceService } from './chartservice.service';
-import {CHART_CACHE_PATH} from "../utils/constants";
-import {ChartConfigData} from "../utils/interfaces/chartconfigdata.interface";
+import {CHART_CACHE_PATH} from '../utils/constants';
+import {ChartConfigData} from '../utils/interfaces/chartconfigdata.interface';
 
 jest.mock('download-git-repo');
 jest.mock('uuid');
