@@ -5,6 +5,7 @@
 - Install Node.js runtime via https://nodejs.org/en/download/
 - Install nestjs CLI via https://docs.nestjs.com/cli/overview
 - Install Kubectl CLI via https://kubernetes.io/docs/tasks/tools/install-kubectl/
+- Find a Kyma cluster
 - Get the kubeconfig file and configure the CLI https://kyma-project.io/docs/components/security/#details-iam-kubeconfig-service-get-the-kubeconfig-file-and-configure-the-cli
 - Install Helm3 CLI via https://helm.sh/docs/intro/install/
 
