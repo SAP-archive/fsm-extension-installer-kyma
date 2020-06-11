@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HelmserviceService } from './helmservice.service';
 import {CmdhelperServiceModule} from '../cmdhelper/cmdhelper.module';
 import {CmdhelperService} from '../cmdhelper/cmdhelper.service';
-import {HelmBaseOptions, HelmDeployOptions} from "../utils/interfaces/helmperformoptions.interface";
+import {HelmBaseOptions, HelmDeployOptions} from '../utils/interfaces/helmperformoptions.interface';
+
+process.env.KYMA_VER = '1.12.0';
+import { HelmserviceService } from './helmservice.service';
 
 describe('HelmserviceService', () => {
   let service: HelmserviceService;
@@ -16,8 +18,6 @@ describe('HelmserviceService', () => {
 
     service = module.get<HelmserviceService>(HelmserviceService);
     cmdhelperService = module.get<CmdhelperService>(CmdhelperService);
-
-    process.env.KYMA_VER = '1.12.0';
   });
 
   async function testSuccessfulInstallCase(isExistingParameters: boolean) {
