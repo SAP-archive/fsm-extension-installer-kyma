@@ -4,7 +4,7 @@
 
 image:
   repository: sapfsm/fsm-extension-installer-for-kyma
-  tag: ${appVersion}
+  tag: 0.2.0
   pullPolicy: Always
 
 nameOverride: ""

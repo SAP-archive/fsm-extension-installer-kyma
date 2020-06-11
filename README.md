@@ -2,6 +2,8 @@
 
 Customers can use this sample to quickly deploy the SAP FSM extension application on Kyma system. It can accelerate the building and refinement of the integration between the SAP FSM system and Kyma system. Customers can clone and enhance it with their own logic to meet their own specific needs, which enables the integration to be continuously improved with the use of customers.
 
+This extension installer has been verified on **Kyma version <= 1.12.0**.
+
 # How to set up extension installer
 
 ## Prerequisites
@@ -51,7 +53,7 @@ In order to install extension installer in Kyma, you must fulfill the following 
       - Enter service instance name that you created in step 3.
       - Enter the exact Kyma version.
 
-6. [Optional] Install the latest version of extension installer as needed by following these steps:
+6. [Optional] Upgrade to the latest version of extension installer as needed by following these steps:
 
    a. Delete the extension installer addon instance that was provisioned in step 5.
 
