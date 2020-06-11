@@ -77,6 +77,9 @@ describe('ExtensionCatalogService', () => {
     expect(spy4get).toBeCalled();
     expect(spy4promise).toBeCalled();
     expect(responseData).toStrictEqual(testData);
+
+    spy4promise.mockRestore();
+    spy4get.mockRestore();
   });
 
   it('different response data, should be successfully invoked for getDeploymentConfigData', async () => {
@@ -125,6 +128,9 @@ describe('ExtensionCatalogService', () => {
     expect(spy4get).toBeCalled();
     expect(spy4promise).toBeCalled();
     expect(responseData).toStrictEqual(testData);
+
+    spy4promise.mockRestore();
+    spy4get.mockRestore();
   });
 
   it('should throw exception for getDeploymentConfigData', async () => {
@@ -142,6 +148,9 @@ describe('ExtensionCatalogService', () => {
     await expect(service.getDeploymentConfigData(requestData)).rejects.toThrowError(error);
     expect(spy4get).toBeCalled();
     expect(spy4promise).toBeCalled();
+
+    spy4promise.mockRestore();
+    spy4get.mockRestore();
   });
 
   it('should be successfully invoked for updateDeploymentInfoToCatalog', async () => {
@@ -160,6 +169,9 @@ describe('ExtensionCatalogService', () => {
     await expect(service.updateDeploymentInfoToCatalog(updatedDeployData));
     expect(spy4get).toBeCalled();
     expect(spy4promise).toBeCalled();
+
+    spy4promise.mockRestore();
+    spy4get.mockRestore();
   });
 
   it('should throw exception for updateDeploymentInfoToCatalog', async () => {
@@ -179,6 +191,9 @@ describe('ExtensionCatalogService', () => {
     await expect(service.updateDeploymentInfoToCatalog(updatedDeployData)).rejects.toThrowError(error);
     expect(spy4get).toBeCalled();
     expect(spy4promise).toBeCalled();
+
+    spy4promise.mockRestore();
+    spy4get.mockRestore();
   });
 
   it('should be successfully invoked for addDeploymentResultToCatalog', async () => {
@@ -201,6 +216,9 @@ describe('ExtensionCatalogService', () => {
     await expect(service.addDeploymentResultToCatalog(deployResultData));
     expect(spy4get).toBeCalled();
     expect(spy4promise).toBeCalled();
+
+    spy4promise.mockRestore();
+    spy4get.mockRestore();
   });
 
   it('should throw exception for addDeploymentResultToCatalog', async () => {
@@ -221,5 +239,8 @@ describe('ExtensionCatalogService', () => {
     await expect(service.addDeploymentResultToCatalog(deployResultData)).rejects.toThrowError(error);
     expect(spy4get).toBeCalled();
     expect(spy4promise).toBeCalled();
+
+    spy4promise.mockRestore();
+    spy4get.mockRestore();
   });
 });
