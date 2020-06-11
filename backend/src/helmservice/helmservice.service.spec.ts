@@ -20,12 +20,12 @@ describe('HelmserviceService', () => {
     process.env.KYMA_VER = '1.12.0';
   });
 
-  it('should be successfully invoked for install', async () => {
+  async function testSuccessfulInstallCase(isExistingParameters: boolean) {
     const helmDeployOptions = {
       releaseName: 'test-extension',
       namespace: 'default',
       chartLocation: 'helm/Chart.yaml',
-      values: Object.assign({imagePullPolicy: 'Always'})
+      values: isExistingParameters ? Object.assign({imagePullPolicy: 'Always'}) : null
     } as HelmDeployOptions;
 
     const response = 'install is successful';
@@ -35,6 +35,16 @@ describe('HelmserviceService', () => {
     expect(result.stderr).toBe(null);
     expect(result.stdout).toBe(response);
     expect(spy4runCmd).toBeCalled();
+
+    spy4runCmd.mockRestore();
+  }
+
+  it('should be successfully invoked for install', async () => {
+    await testSuccessfulInstallCase(true);
+  });
+
+  it('should be successfully invoked for install, user not set parameters', async () => {
+    await testSuccessfulInstallCase(false);
   });
 
   it('should throw exception for install due to not namespace', async () => {
@@ -64,6 +74,8 @@ describe('HelmserviceService', () => {
     const result = await service.install(helmDeployOptions);
     expect(result.stderr).toBe(error4runCmd);
     expect(spy4runCmd).toBeCalled();
+
+    spy4runCmd.mockRestore();
   });
 
   it('should be successfully invoked for delete', async () => {
@@ -79,6 +91,8 @@ describe('HelmserviceService', () => {
     expect(result.stderr).toBe(null);
     expect(result.stdout).toBe(response);
     expect(spy4runCmd).toBeCalled();
+
+    spy4runCmd.mockRestore();
   });
 
   it('should throw exception for delete, due to failure of runCmd method', async () => {
@@ -93,6 +107,8 @@ describe('HelmserviceService', () => {
     const result = await service.delete(helmDeleteOptions);
     expect(result.stderr).toBe(error4runCmd);
     expect(spy4runCmd).toBeCalled();
+
+    spy4runCmd.mockRestore();
   });
 
   it('should be successfully invoked for exist', async () => {
@@ -106,6 +122,8 @@ describe('HelmserviceService', () => {
 
     await expect(service.exist(helmStatusOptions)).resolves.toBe(true);
     expect(spy4runCmd).toBeCalled();
+
+    spy4runCmd.mockRestore();
   });
 
   it('should be successfully invoked for exist, but release is not existing', async () => {
@@ -119,5 +137,7 @@ describe('HelmserviceService', () => {
 
     await expect(service.exist(helmStatusOptions)).resolves.toBe(false);
     expect(spy4runCmd).toBeCalled();
+
+    spy4runCmd.mockRestore();
   });
 });
