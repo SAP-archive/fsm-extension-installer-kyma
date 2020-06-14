@@ -42,7 +42,7 @@ spec:
 {{- end }}
 
 
-{{- if le (semver .Values.kyma.version | (semver "1.11.0-0").Compare) 0 -}}
+{{- if lt (semver .Values.kyma.version | (semver "1.11.0-0").Compare) 0 -}}
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
