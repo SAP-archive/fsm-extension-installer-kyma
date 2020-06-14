@@ -1,0 +1,20 @@
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceBinding
+metadata:
+  name: {{ include "fsm-extension-installer.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  instanceRef:
+    name: {{ required "ServiceInstance Name must be provided!" .Values.serviceInstanceName }}
+---
+apiVersion: servicecatalog.kyma-project.io/v1alpha1
+kind: ServiceBindingUsage
+metadata:
+  name: {{ include "fsm-extension-installer.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  serviceBindingRef:
+    name: {{ include "fsm-extension-installer.fullname" . }}
+  usedBy:
+    kind: deployment
+    name: {{ include "fsm-extension-installer.fullname" . }}
