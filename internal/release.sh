@@ -30,9 +30,9 @@ done
 echo "======replace with new uuid========================"
 # For Linux, it is easily to generate uuid by `cat /proc/sys/kernel/random/uuid`, however, Windows is not so easy
 # So we have to use web api
-uuid=$(curl -s https://www.uuidgenerator.net/api/version4/)
+uuid=$(curl -k -s https://www.uuidgenerator.net/api/version4/)
 sed "s/\${uuid}/${uuid}/g" $i ./plans/default/meta.yaml
-uuid=$(curl -s https://www.uuidgenerator.net/api/version4/)
+uuid=$(curl -k -s https://www.uuidgenerator.net/api/version4/)
 sed "s/\${uuid}/${uuid}/g" $i ./meta.yaml
 cd ../../internal
 
