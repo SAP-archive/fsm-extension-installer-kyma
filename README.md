@@ -57,6 +57,10 @@ In order to install extension installer in Kyma, you must fulfill the following 
 
 >**NOTE**: You can find the Kyma Version in the bottom left area on your Kyma Console UI. If your Kyma Version is older than 1.11 follow step 1 in the [Kyma Documentation](https://kyma-project.io/docs/#installation-upgrade-kyma-upgrade-kyma-to-a-newer-version).
 
+   c. After completing the provisioning select **Instances** in left navigation sidebar. Then switch to **Services**. There should be one instance with Service Class "Extension Catalog API" and one instance with Service Class "FSM Extension Installer For Kyma" in Status "RUNNING".
+
+   The extension installer should now be ready to use.
+
 6. [Optional] Upgrade to the latest version of extension installer as needed by following these steps:
 
    a. Delete the extension installer addon instance that was provisioned in step 5.
@@ -66,7 +70,8 @@ In order to install extension installer in Kyma, you must fulfill the following 
    c. Redo step 4 and step 5.
 
 # Remark
-If you are disabling and enabling the SAP Extension Factory in SAP Field Service Management after you have performed all the above steps your Kyma Configuration described in this guide will not work anymore. You will need to clean up your Kyma configuration and repeat the steps described in this guide.
+
+If you are disabling and enabling the SAP Extension Factory in SAP Field Service Management after you have performed all the above steps your Kyma-Configuration described in this guide will not work anymore. You will need to clean up your Kyma-Configuration and repeat the steps described in this guide.
 
 # Known Issues
 
