@@ -30,7 +30,9 @@ In order to install extension installer in Kyma, you must fulfill the following 
 
    b. Select **Catalog** in left navigation sidebar. Then switch to **Services** and navigate to the service that corresponds to the **Application** that you have created in Kyma.
 
-   c. Click **Add once** to provision a service instance. Enter a service instance name and save it. And you can see your instance in Kyma console under **Instance**. Important: Note down the service instance name as you will need it in Step 5.
+   c. Click **Add once** to provision a service instance. Enter a service instance name and save it. And you can see your instance in Kyma console under **Instance**.
+
+   **Important**: Note down the service instance name as you will need it in Step 5.
 
 4. Register extension installer addon.
 
