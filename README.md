@@ -30,7 +30,7 @@ In order to install extension installer in Kyma, you must fulfill the following 
 
    b. Select **Catalog** in left navigation sidebar. Then switch to **Services** and navigate to the service that corresponds to the **Application** that you have created in Kyma.
 
-   c. Click **Add once** to provision a service instance. Enter a service instance name and save it. And you can see your instance in Kyma console under **Instance**.
+   c. Click **Add once** to provision a service instance. Enter a service instance name and save it. And you can see your instance in Kyma console under **Instance**. Important: Note down the service instance name as you will need it in Step 5.
 
 4. Register extension installer addon.
 
@@ -50,8 +50,10 @@ In order to install extension installer in Kyma, you must fulfill the following 
       - Enter an addon instance name.
       - Choose Default plan.
       - Enter application name that you created in section Prerequisites.
-      - Enter service instance name that you created in step 3.
       - Enter the exact Kyma version.
+      - Enter service instance name that you created in step 3.
+
+>**NOTE**: You can find the Kyma Version in the bottom left area on your Kyma Console UI. If your Kyma Version is older than 1.11 follow step 1 in the [Kyma Documentation](https://kyma-project.io/docs/#installation-upgrade-kyma-upgrade-kyma-to-a-newer-version).
 
 6. [Optional] Upgrade to the latest version of extension installer as needed by following these steps:
 
@@ -60,6 +62,9 @@ In order to install extension installer in Kyma, you must fulfill the following 
    b. Delete the extension installer addon that was registered in step 4.
 
    c. Redo step 4 and step 5.
+
+# Remark
+If you are disabling and enabling the SAP Extension Factory in SAP Field Service Management after you have performed all the above steps your Kyma Configuration described in this guide will not work anymore. You will need to clean up your Kyma configuration and repeat the steps described in this guide.
 
 # Known Issues
 
