@@ -24,6 +24,8 @@ In order to install extension installer in Kyma, you must fulfill the following 
 
    c. Select **Extension Catalog API**. Then save it.
 
+   **Important**: Note down the application name as you will need it in step 5.
+
 3. Create service instance for **Application** that you have created in Kyma.
 
    a. Navigate to the namespace that you created in step 1.
