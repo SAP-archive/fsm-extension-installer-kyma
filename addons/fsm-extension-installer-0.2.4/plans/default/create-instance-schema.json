@@ -1,0 +1,34 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "appName": {
+            "type": "string",
+            "title": "Application Name",
+            "description": "Name of the application which is connected with the FSM tenant"
+        },
+        "serviceInstanceName": {
+            "type": "string",
+            "title": "Service Instance Name",
+            "description": "Name of the service instance which is provisioned from the service class \"Extension Catalog API\""
+        },
+        "kyma": {
+            "type": "object",
+            "title": "Kyma",
+            "properties": {
+                "version": {
+                    "type": "string",
+                    "title": "Version",
+                    "description": "The exact version number like \"1.11.0\", \"1.11.0-rc1\""
+                }
+            },
+            "required": [
+                "version"
+            ]
+        }
+    },
+    "required": [
+        "appName",
+        "serviceInstanceName"
+    ]
+}
