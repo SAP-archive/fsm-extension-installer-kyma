@@ -57,7 +57,7 @@ In order to install extension installer in Kyma, you must fulfill the following 
       - Enter service instance name that you created in step 3.
       - Enter the exact Kyma version.
 
-   >**NOTE**: You can find the Kyma Version in the bottom left area on your Kyma Console UI. If your Kyma Version is older than 1.11, follow step 1 in the [Kyma Documentation](https://kyma-project.io/docs/#installation-upgrade-kyma-upgrade-kyma-to-a-newer-version).
+   >**NOTE**: The version number has to match exact (major.minor.patch). You can find the Kyma Version in the bottom left area on your Kyma Console UI. If your Kyma Version is older than 1.11.x, follow step 1 in the [Kyma Documentation](https://kyma-project.io/docs/#installation-upgrade-kyma-upgrade-kyma-to-a-newer-version).
 
    c. After completing the provisioning, select **Instances** in left navigation sidebar. There should be one instance named "Extension Catalog API" under "Services" tab and also another instance named "FSM Extension Installer For Kyma" under "Add-Ons" tab in Status "RUNNING".
 
