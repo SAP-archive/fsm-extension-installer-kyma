@@ -1,4 +1,4 @@
-# fsm-extension-installer-kyma
+# SAP FSM Extension Installer for Kyma
 
 Customers can use this sample to quickly deploy the SAP FSM extension application on Kyma system. It can accelerate the building and refinement of the integration between the SAP FSM system and Kyma system. Customers can clone and enhance it with their own logic to meet their own specific needs, which enables the integration to be continuously improved with the use of customers.
 
