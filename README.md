@@ -10,7 +10,7 @@ This extension installer has been verified on **Kyma version <= 1.13.0**.
 
 In order to install extension installer in Kyma, you must fulfill the following requirements:
 
-1. You must have set up Kyma connection with FSM and created an **Application** in Kyma by following the [guide](https://docs.coresystems.net/extensions-ui-plugins/cloud-platform-extension-factory-integration.html).
+1. You must have set up Kyma connection with FSM and created an **Application** in Kyma by following the [guide](https://docs.coresystems.net/extensions-ui-plugins/cloud-platform-extensions.html).
 
 ## Installation Process
 
