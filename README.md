@@ -1,6 +1,6 @@
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/fsm-extension-installer-kyma)](https://api.reuse.software/info/github.com/SAP-samples/fsm-extension-installer-kyma)
 
-# fsm-extension-installer-kyma
+# SAP FSM Extension Installer for Kyma
 
 Customers can use this sample to quickly deploy the SAP FSM extension application on Kyma system. It can accelerate the building and refinement of the integration between the SAP FSM system and Kyma system. Customers can clone and enhance it with their own logic to meet their own specific needs, which enables the integration to be continuously improved with the use of customers.
 
@@ -12,7 +12,7 @@ This extension installer has been verified on **Kyma version <= 1.13.0**.
 
 In order to install extension installer in Kyma, you must fulfill the following requirements:
 
-1. You must have set up Kyma connection with FSM and created an **Application** in Kyma by following the [guide](https://docs.coresystems.net/extensions-ui-plugins/cloud-platform-extension-factory-integration.html).
+1. You must have set up Kyma connection with FSM and created an **Application** in Kyma by following the [guide](https://docs.coresystems.net/extensions-ui-plugins/cloud-platform-extensions.html).
 
 ## Installation Process
 
