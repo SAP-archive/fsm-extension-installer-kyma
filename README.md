@@ -1,3 +1,5 @@
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/fsm-extension-installer-kyma)](https://api.reuse.software/info/github.com/SAP-samples/fsm-extension-installer-kyma)
+
 # fsm-extension-installer-kyma
 
 Customers can use this sample to quickly deploy the SAP FSM extension application on Kyma system. It can accelerate the building and refinement of the integration between the SAP FSM system and Kyma system. Customers can clone and enhance it with their own logic to meet their own specific needs, which enables the integration to be continuously improved with the use of customers.
