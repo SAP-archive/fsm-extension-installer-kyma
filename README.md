@@ -1,3 +1,5 @@
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/fsm-extension-installer-kyma)](https://api.reuse.software/info/github.com/SAP-samples/fsm-extension-installer-kyma)
+
 # SAP FSM Extension Installer for Kyma
 
 Customers can use this sample to quickly deploy the SAP FSM extension application on Kyma system. It can accelerate the building and refinement of the integration between the SAP FSM system and Kyma system. Customers can clone and enhance it with their own logic to meet their own specific needs, which enables the integration to be continuously improved with the use of customers.
@@ -78,7 +80,3 @@ If you are disabling and enabling the SAP Extension Factory in SAP Field Service
 # How to obtain support
 
 In case you find a bug or need support, please open an issue [here](https://github.com/SAP-samples/fsm-extension-installer-kyma/issues/new).
-
-# License
-
-Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved. This file is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](./LICENSE) file.
