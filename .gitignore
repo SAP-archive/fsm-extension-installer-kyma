@@ -34,3 +34,6 @@ backend/.nyc_output
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Reuse tool (License tool)
+/.reuse
