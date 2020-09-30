@@ -10,9 +10,9 @@ npm run build:prod
 cd ..
 
 echo "======docker build=================================="
-docker build -t i503740/fsm-extension-installer-for-kyma:$appVersion .
+docker build -t sapfsm/fsm-extension-installer-for-kyma:$appVersion .
 
 echo "======docker push=================================="
-docker push i503740/fsm-extension-installer-for-kyma:$appVersion
+docker push sapfsm/fsm-extension-installer-for-kyma:$appVersion
 
 echo "Extension installer is built successfully!"
