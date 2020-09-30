@@ -1,5 +1,5 @@
 //Define saved helm-chart files path after downloading it from github.
-export const CHART_CACHE_PATH: string = (process.env.SHARE_DIR? process.env.SHARE_DIR: process.cwd()) +'/chart_caches/';
+export const CHART_CACHE_PATH: string = (process.env.SHARE_DIR ? process.env.SHARE_DIR : process.cwd()) + '/chart_caches/';
 
 //Define path of helm-cli(must be v3!!!) and kubectl-cli, default initialized via ENV command in Dockerfile file.
 export const HELM_BINARY_LOCATION: string = process.env.HELM_BINARY || '/usr/local/bin/helm3';
@@ -13,3 +13,6 @@ export const KUBE_CONFIG_LOCATION: string = process.env.KUBECONFIG_PATH || '~/.k
 
 //Define the version of Kyma which the installer is setup on
 export const KYMA_VER: string = process.env.KYMA_VER;
+
+//Define the namespace in which the installer is set up
+export const INSTALLER_NAMESPACE: string = process.env.INSTALLER_NAMESPACE || 'default';

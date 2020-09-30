@@ -1,12 +1,12 @@
-import {HttpService, Injectable, Logger, LoggerService} from '@nestjs/common';
-import {AxiosRequestConfig} from 'axios';
+import { HttpService, Injectable, Logger, LoggerService } from '@nestjs/common';
+import { AxiosRequestConfig } from 'axios';
 
-import {DeployConfigData} from '../utils/interfaces/deployconfigdata.interface';
-import {UpdatedDeployData} from '../utils/interfaces/updateddeploydata.interface';
-import {DeployResultData} from '../utils/interfaces/deployresultdata.interface';
-import {ChartConfigData} from '../utils/interfaces/chartconfigdata.interface';
-import {RequestInstallData} from '../utils/interfaces/requestdata.interface';
-import {KYMA_SERVICE_CLASS_GATEWAY_URL} from '../utils/constants';
+import { DeployConfigData } from '../utils/interfaces/deployconfigdata.interface';
+import { UpdatedDeployData } from '../utils/interfaces/updateddeploydata.interface';
+import { DeployResultData } from '../utils/interfaces/deployresultdata.interface';
+import { ChartConfigData } from '../utils/interfaces/chartconfigdata.interface';
+import { RequestInstallData } from '../utils/interfaces/requestdata.interface';
+import { INSTALLER_NAMESPACE, KYMA_SERVICE_CLASS_GATEWAY_URL } from '../utils/constants';
 
 @Injectable()
 export class ExtensionCatalogService {
@@ -31,11 +31,12 @@ export class ExtensionCatalogService {
 
             const retValue = await this.httpService.get(url, config).toPromise();
             const deploymentObj = retValue.data;
+
             this.loggerService.log("DeploymentConfigData:");
             this.loggerService.log(deploymentObj);
             return {
-                // Enhancement: set namespace to 'default' if user not fill namespace value
-                namespace: (deploymentObj.deploymentConfig && deploymentObj.deploymentConfig.namespace) ? deploymentObj.deploymentConfig.namespace : 'default',
+                // namespace is set to the INSTALLER_NAMESPACE if nothing provided in deploymentConfig
+                namespace: (deploymentObj.deploymentConfig && deploymentObj.deploymentConfig.namespace) ? deploymentObj.deploymentConfig.namespace : INSTALLER_NAMESPACE,
                 parameterValues: deploymentObj.deploymentConfig ? deploymentObj.deploymentConfig.values : null,
                 appVersion: deploymentObj.extension.version,
                 chartConfigData: {
