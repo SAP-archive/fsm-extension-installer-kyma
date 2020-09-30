@@ -44,6 +44,8 @@ spec:
               value: "/share"
             - name: KYMA_VER
               value: {{ .Values.kyma.version }}
+            - name: INSTALLER_NAMESPACE
+              value: {{ .Release.Namespace }}
           ports:
             - name: http
               containerPort: {{ .Values.service.internalPort }}
