@@ -1,15 +1,16 @@
 import fse = require('fs-extra');
 import download = require('download-git-repo');
 import empty = require('is-empty');
-import {v4 as uuidv4} from 'uuid';
-import {Injectable, Logger, LoggerService} from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
+import { Injectable, LoggerService } from '@nestjs/common';
 
-import {ChartConfigData} from '../utils/interfaces/chartconfigdata.interface';
-import {CHART_CACHE_PATH} from '../utils/constants';
+import { ChartConfigData } from '../utils/interfaces/chartconfigdata.interface';
+import { CHART_CACHE_PATH } from '../utils/constants';
+import { ExtensionInstallerLogger } from 'src/utils/logger/extension-installer-logger';
 
 @Injectable()
 export class ChartserviceService {
-    private readonly loggerService: LoggerService = new Logger(ChartserviceService.name, true);
+    private readonly loggerService: LoggerService = new ExtensionInstallerLogger(ChartserviceService.name, true);
 
     constructor() {
         this.prepareStoredPath4Chart();

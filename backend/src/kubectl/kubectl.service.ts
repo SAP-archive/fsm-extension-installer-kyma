@@ -1,11 +1,12 @@
-import {Injectable, Logger, LoggerService} from '@nestjs/common';
-import {KUBECTL_BINARY_LOCATION, KUBE_CONFIG_LOCATION} from '../utils/constants';
+import { Injectable, LoggerService } from '@nestjs/common';
+import { KUBE_CONFIG_LOCATION, KUBECTL_BINARY_LOCATION } from '../utils/constants';
 
 import { CmdhelperService } from '../cmdhelper/cmdhelper.service';
+import { ExtensionInstallerLogger } from 'src/utils/logger/extension-installer-logger';
 
 @Injectable()
 export class KubectlService {
-    private readonly loggerService: LoggerService = new Logger(KubectlService.name, true);
+    private readonly loggerService: LoggerService = new ExtensionInstallerLogger(KubectlService.name, true);
 
     constructor(private readonly cmdhelperService: CmdhelperService) {
     }

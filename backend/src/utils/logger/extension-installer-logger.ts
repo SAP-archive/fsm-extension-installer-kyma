@@ -1,7 +1,12 @@
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger, Scope } from '@nestjs/common';
 
-
+@Injectable({ scope: Scope.TRANSIENT })
 export class ExtensionInstallerLogger extends Logger {
+
+  constructor(context?: string, isTimestampEnabled?: boolean) {
+    super(context, isTimestampEnabled);
+  }
+
   log(message: string) {
     // TODO: call logging endpoint from extension-microservice
     super.log(message);

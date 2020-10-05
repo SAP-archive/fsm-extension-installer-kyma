@@ -1,10 +1,11 @@
-import {ArgumentsHost, Catch, HttpStatus, Logger, LoggerService} from '@nestjs/common';
-import {BaseExceptionFilter} from '@nestjs/core';
+import { ArgumentsHost, Catch, HttpStatus, LoggerService } from '@nestjs/common';
+import { BaseExceptionFilter } from '@nestjs/core';
+import { ExtensionInstallerLogger } from 'src/utils/logger/extension-installer-logger';
 
 @Catch()
 export class AllExceptionsFilter<T> extends BaseExceptionFilter {
     private readonly loggerService: LoggerService =
-        new Logger(AllExceptionsFilter.name, true);
+        new ExtensionInstallerLogger(AllExceptionsFilter.name, true);
 
     catch(exception: T, host: ArgumentsHost) {
         const response = host.switchToHttp().getResponse();

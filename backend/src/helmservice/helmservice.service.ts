@@ -1,12 +1,13 @@
-import {Injectable, Logger, LoggerService} from '@nestjs/common';
+import { Injectable, LoggerService } from '@nestjs/common';
 
-import {HelmBaseOptions, HelmDeployOptions} from '../utils/interfaces/helmperformoptions.interface';
-import {HELM_BINARY_LOCATION, KUBE_CONFIG_LOCATION, KYMA_VER} from '../utils/constants';
+import { HelmBaseOptions, HelmDeployOptions } from '../utils/interfaces/helmperformoptions.interface';
+import { HELM_BINARY_LOCATION, KUBE_CONFIG_LOCATION, KYMA_VER } from '../utils/constants';
 import { CmdhelperService } from './../cmdhelper/cmdhelper.service';
+import { ExtensionInstallerLogger } from 'src/utils/logger/extension-installer-logger';
 
 @Injectable()
 export class HelmserviceService {
-    private readonly loggerService: LoggerService = new Logger(HelmserviceService.name, true);
+    private readonly loggerService: LoggerService = new ExtensionInstallerLogger(HelmserviceService.name, true);
 
     constructor(private readonly cmdhelperService: CmdhelperService) {
     }

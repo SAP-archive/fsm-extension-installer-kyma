@@ -1,11 +1,12 @@
-import {Controller, Get, HttpCode, HttpStatus, Logger, LoggerService, Post, Req, Res} from '@nestjs/common';
-import {Request, Response} from 'express';
-import {InstallerService} from './installerservice.service';
-import {RequestInstallData, RequestUninstallData} from '../utils/interfaces/requestdata.interface';
+import { Controller, Get, HttpCode, HttpStatus, LoggerService, Post, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
+import { InstallerService } from './installerservice.service';
+import { RequestInstallData, RequestUninstallData } from '../utils/interfaces/requestdata.interface';
+import { ExtensionInstallerLogger } from 'src/utils/logger/extension-installer-logger';
 
 @Controller('/api/fsm-extension-installer/v1')
 export class InstallerServiceController {
-    private readonly loggerService: LoggerService = new Logger(InstallerServiceController.name, true);
+    private readonly loggerService: LoggerService = new ExtensionInstallerLogger(InstallerServiceController.name, true);
 
     constructor(private readonly installerService: InstallerService) {
     }

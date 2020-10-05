@@ -1,20 +1,21 @@
-import { Injectable, LoggerService, Logger } from '@nestjs/common';
+import { Injectable, LoggerService } from '@nestjs/common';
+import { ExtensionCatalogService } from '../extensioncatalogservice/extensioncatalogservice.service';
+import { ChartserviceService } from '../chartservice/chartservice.service';
+import { HelmserviceService } from '../helmservice/helmservice.service';
+import { HelmBaseOptions, HelmDeployOptions } from '../utils/interfaces/helmperformoptions.interface';
+import { DeployConfigData } from '../utils/interfaces/deployconfigdata.interface';
+import { UpdatedDeployData } from '../utils/interfaces/updateddeploydata.interface';
+import { DeployResultData } from '../utils/interfaces/deployresultdata.interface';
+import { KubectlService } from '../kubectl/kubectl.service';
+import { RequestInstallData, RequestUninstallData } from '../utils/interfaces/requestdata.interface';
+import { ExtensionInstallerLogger } from 'src/utils/logger/extension-installer-logger';
 import yamljs = require('yamljs');
 import search = require('recursive-search');
 import path = require('path');
-import {ExtensionCatalogService} from '../extensioncatalogservice/extensioncatalogservice.service';
-import {ChartserviceService} from '../chartservice/chartservice.service';
-import {HelmserviceService} from '../helmservice/helmservice.service';
-import {HelmBaseOptions, HelmDeployOptions} from '../utils/interfaces/helmperformoptions.interface';
-import {DeployConfigData} from '../utils/interfaces/deployconfigdata.interface';
-import {UpdatedDeployData} from '../utils/interfaces/updateddeploydata.interface';
-import {DeployResultData} from '../utils/interfaces/deployresultdata.interface';
-import {KubectlService} from '../kubectl/kubectl.service';
-import {RequestInstallData, RequestUninstallData} from '../utils/interfaces/requestdata.interface';
 
 @Injectable()
 export class InstallerService {
-    private readonly loggerService: LoggerService = new Logger(InstallerService.name, true);
+    private readonly loggerService: LoggerService = new ExtensionInstallerLogger(InstallerService.name, true);
 
     constructor(private readonly extensionCatalogService: ExtensionCatalogService,
                 private readonly chartserviceService: ChartserviceService,

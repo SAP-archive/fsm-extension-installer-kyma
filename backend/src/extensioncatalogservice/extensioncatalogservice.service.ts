@@ -1,4 +1,4 @@
-import { HttpService, Injectable, Logger, LoggerService } from '@nestjs/common';
+import { HttpService, Injectable, LoggerService } from '@nestjs/common';
 import { AxiosRequestConfig } from 'axios';
 
 import { DeployConfigData } from '../utils/interfaces/deployconfigdata.interface';
@@ -7,10 +7,11 @@ import { DeployResultData } from '../utils/interfaces/deployresultdata.interface
 import { ChartConfigData } from '../utils/interfaces/chartconfigdata.interface';
 import { RequestInstallData } from '../utils/interfaces/requestdata.interface';
 import { INSTALLER_NAMESPACE, KYMA_SERVICE_CLASS_GATEWAY_URL } from '../utils/constants';
+import { ExtensionInstallerLogger } from 'src/utils/logger/extension-installer-logger';
 
 @Injectable()
 export class ExtensionCatalogService {
-    private readonly loggerService: LoggerService = new Logger(ExtensionCatalogService.name, true);
+    private readonly loggerService: LoggerService = new ExtensionInstallerLogger(ExtensionCatalogService.name, true);
 
     constructor(private readonly httpService: HttpService) {
     }
