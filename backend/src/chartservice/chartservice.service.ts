@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { ChartConfigData } from '../utils/interfaces/chartconfigdata.interface';
 import { CHART_CACHE_PATH } from '../utils/constants';
 import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
+import { RequestData } from 'src/utils/interfaces/requestdata.interface';
 
 @Injectable()
 export class ChartserviceService {
@@ -16,9 +17,9 @@ export class ChartserviceService {
         this.prepareStoredPath4Chart();
     }
 
-    public async downloadChartFromGithubRepo(chartConfigData: ChartConfigData): Promise<string> {
-        this.loggerService.log("ChartConfigData:");
-        this.loggerService.log(chartConfigData);
+    public async downloadChartFromGithubRepo(chartConfigData: ChartConfigData, requestData: RequestData): Promise<string> {
+        this.loggerService.log("ChartConfigData:", null, requestData);
+        this.loggerService.log(chartConfigData, null, requestData);
         const repo = 'direct:' + chartConfigData.repository + (!empty(chartConfigData.ref) ? ('#' + chartConfigData.ref) : '');
         const dest = CHART_CACHE_PATH + uuidv4();
 
@@ -33,7 +34,7 @@ export class ChartserviceService {
                 });
             });
         } catch (err) {
-            this.loggerService.error(err.toString());
+            this.loggerService.error(err.toString(), null, null, requestData);
             throw err;
         }
     }

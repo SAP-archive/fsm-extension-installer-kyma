@@ -7,7 +7,7 @@ import { DeployConfigData } from '../utils/interfaces/deployconfigdata.interface
 import { UpdatedDeployData } from '../utils/interfaces/updateddeploydata.interface';
 import { DeployResultData } from '../utils/interfaces/deployresultdata.interface';
 import { KubectlService } from '../kubectl/kubectl.service';
-import { RequestInstallData, RequestUninstallData } from '../utils/interfaces/requestdata.interface';
+import { RequestData, RequestInstallData, RequestUninstallData } from '../utils/interfaces/requestdata.interface';
 import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
 import yamljs = require('yamljs');
 import search = require('recursive-search');
@@ -25,25 +25,25 @@ export class InstallerService {
     }
 
     public async installExtension(requestData: RequestInstallData) {
-        this.loggerService.log("Begin to install extension application ...");
+        this.loggerService.log("Begin to install extension application ...", null, requestData);
         return await this.deployExtension(requestData, false);
     }
 
     public async upgradeExtension(requestData: RequestInstallData) {
-        this.loggerService.log("Begin to upgrade extension application ...");
+        this.loggerService.log("Begin to upgrade extension application ...", null, requestData);
         return await this.deployExtension(requestData, true);
     }
 
     public async uninstallExtension(requestData: RequestUninstallData) {
-        this.loggerService.log("Begin to uninstall extension application ...");
+        this.loggerService.log("Begin to uninstall extension application ...", null, requestData);
 
         await this.helmserviceService.delete({releaseName: requestData.releaseName,
-            namespace: requestData.namespace} as HelmBaseOptions);
+            namespace: requestData.namespace} as HelmBaseOptions, requestData);
 
-        this.loggerService.log('Successfully finish uninstall workflow.');
+        this.loggerService.log('Successfully finish uninstall workflow.', null, requestData);
     }
 
-    private getReleaseName(chartPath: string): string {
+    private getReleaseName(chartPath: string, requestData: RequestData): string {
         try {
             const chartFile = `${chartPath}/Chart.yaml`;
             const chartObject = yamljs.load(chartFile);
@@ -53,7 +53,7 @@ export class InstallerService {
 
             return chartObject.name;
         } catch (error) {
-            this.loggerService.error(error.toString());
+            this.loggerService.error(error.toString(), null, null, requestData);
             throw error;
         }
     }
@@ -62,29 +62,29 @@ export class InstallerService {
         let repoLocalPath: string = null;
         try {
             let stepNum = 1;
-            this.loggerService.log(`Step${stepNum++}, Get deployment configuration data via deploymentId from Extension Catalog service.`);
+            this.loggerService.log(`Step${stepNum++}, Get deployment configuration data via deploymentId from Extension Catalog service.`, null, requestData);
             const deployConfigData: DeployConfigData =
                 await this.extensionCatalogService.getDeploymentConfigData(requestData);
 
-            this.loggerService.log(`Step${stepNum++}, Download helm chart from github repository.`);
-            repoLocalPath = await this.chartserviceService.downloadChartFromGithubRepo(deployConfigData.chartConfigData);
+            this.loggerService.log(`Step${stepNum++}, Download helm chart from github repository.`, null, requestData);
+            repoLocalPath = await this.chartserviceService.downloadChartFromGithubRepo(deployConfigData.chartConfigData, requestData);
 
-            this.loggerService.log(`Step${stepNum++}, Using helm-cli to install extension app to Kyma cluster.`);
-            const result = await this.installOperation(repoLocalPath, deployConfigData, isUpgradeFlow);
+            this.loggerService.log(`Step${stepNum++}, Using helm-cli to install extension app to Kyma cluster.`, null, requestData);
+            const result = await this.installOperation(repoLocalPath, deployConfigData, isUpgradeFlow, requestData);
             const helmResult = JSON.parse(result);
 
-            this.loggerService.log(`Step${stepNum++}, Get access url from Kyma cluster via virtualservice api-resource type.`);
-            const accessUrl = await this.kubectlService.getAccessUrlFromKymaByAppName(helmResult.name, helmResult.namespace);
+            this.loggerService.log(`Step${stepNum++}, Get access url from Kyma cluster via virtualservice api-resource type.`, null, requestData);
+            const accessUrl = await this.kubectlService.getAccessUrlFromKymaByAppName(helmResult.name, helmResult.namespace, requestData);
 
-            this.loggerService.log(`Step${stepNum++}, Update state:${this.getDeployState(isUpgradeFlow, accessUrl)} to Extension Catalog service via API call.`);
+            this.loggerService.log(`Step${stepNum++}, Update state:${this.getDeployState(isUpgradeFlow, accessUrl)} to Extension Catalog service via API call.`, null, requestData);
             const updatedDeployData = this.buildUpdatedDeployInfo(requestData,
                 this.getDeployState(isUpgradeFlow, accessUrl), deployConfigData.appVersion, accessUrl);
             await this.extensionCatalogService.updateDeploymentInfoToCatalog(updatedDeployData);
 
-            this.loggerService.log(`Step${stepNum++}, Add helmRelease:${helmResult.name} and namespace:${helmResult.namespace} to Extension Deployment Result table.`);
+            this.loggerService.log(`Step${stepNum++}, Add helmRelease:${helmResult.name} and namespace:${helmResult.namespace} to Extension Deployment Result table.`, null, requestData);
             await this.updateHelmValueToDeploymentResult(requestData, helmResult);
 
-            this.loggerService.log(`Successfully finish install or upgrade workflow!`);
+            this.loggerService.log(`Successfully finish install or upgrade workflow!`, null, requestData);
         } catch (error) {
             const state = isUpgradeFlow ? 'UPDATE_FAILED' : 'INSTALL_FAILED';
             const updatedDeployData = this.buildUpdatedDeployInfo(requestData, state, null, '');
@@ -127,11 +127,14 @@ export class InstallerService {
         await this.extensionCatalogService.addDeploymentResultToCatalog(deployResultData);
     }
 
-    private async installOperation(repoPath: string, deployConfigData: DeployConfigData, isUpgradeFlow: boolean) {
+    private async installOperation(repoPath: string,
+                                   deployConfigData: DeployConfigData,
+                                   isUpgradeFlow: boolean,
+                                   requestData: RequestData) {
         //Build deployment options
         const helmChartPath = this.getHelmChartsPath(repoPath, deployConfigData.chartConfigData.path);
         const helmDeployOptions = {
-            releaseName: this.getReleaseName(helmChartPath),
+            releaseName: this.getReleaseName(helmChartPath, requestData),
             chartLocation: helmChartPath,
             namespace: deployConfigData.namespace,
             values: deployConfigData.parameterValues
@@ -141,12 +144,12 @@ export class InstallerService {
         await this.deleteOldHelmRelease({
             releaseName: isUpgradeFlow ? deployConfigData.lastHelmContent.helmRelease : helmDeployOptions.releaseName,
             namespace: isUpgradeFlow ? deployConfigData.lastHelmContent.namespace : helmDeployOptions.namespace
-        } as HelmBaseOptions);
+        } as HelmBaseOptions, requestData);
 
         //Install or upgrade new helm release
-        this.loggerService.log("HelmDeployOptions:");
-        this.loggerService.log(helmDeployOptions);
-        const response = await this.helmserviceService.install(helmDeployOptions);
+        this.loggerService.log("HelmDeployOptions:", null, requestData);
+        this.loggerService.log(helmDeployOptions, null, requestData);
+        const response = await this.helmserviceService.install(helmDeployOptions, requestData);
         if (response.stderr) {
             throw new Error(response.stderr);
         } else {
@@ -154,11 +157,11 @@ export class InstallerService {
         }
     }
 
-    private async deleteOldHelmRelease(helmOptions: HelmBaseOptions) {
+    private async deleteOldHelmRelease(helmOptions: HelmBaseOptions, requestData: RequestData) {
         this.loggerService.log(`Try to delete old release via releaseName:${helmOptions.releaseName} and 
-        namespace:${helmOptions.namespace} for upgrade workflow.`);
-        if (await this.helmserviceService.exist(helmOptions)) {
-            await this.helmserviceService.delete(helmOptions);
+        namespace:${helmOptions.namespace} for upgrade workflow.`, null, requestData);
+        if (await this.helmserviceService.exist(helmOptions, requestData)) {
+            await this.helmserviceService.delete(helmOptions, requestData);
         }
     }
 

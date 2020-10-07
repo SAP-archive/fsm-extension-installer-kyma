@@ -1,24 +1,19 @@
-import { HttpService, Inject, Injectable } from '@nestjs/common';
+import { HttpService, Injectable } from '@nestjs/common';
 import { AxiosRequestConfig } from 'axios';
 
 import { DeployConfigData } from '../utils/interfaces/deployconfigdata.interface';
 import { UpdatedDeployData } from '../utils/interfaces/updateddeploydata.interface';
 import { DeployResultData } from '../utils/interfaces/deployresultdata.interface';
 import { ChartConfigData } from '../utils/interfaces/chartconfigdata.interface';
-import { RequestInstallData } from '../utils/interfaces/requestdata.interface';
+import { RequestData, RequestInstallData } from '../utils/interfaces/requestdata.interface';
 import { INSTALLER_NAMESPACE, KYMA_SERVICE_CLASS_GATEWAY_URL } from '../utils/constants';
 import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
 import { LoggingTypes } from 'src/utils/enums/logging-types';
-import { REQUEST } from '@nestjs/core';
-import { Request } from 'express';
 
 @Injectable()
 export class ExtensionCatalogService {
 
-  constructor(private readonly loggerService: ExtensionInstallerLoggerService,
-              private readonly httpService: HttpService,
-              @Inject(REQUEST)
-              private request: Request) {
+  constructor(private readonly loggerService: ExtensionInstallerLoggerService, private readonly httpService: HttpService) {
     loggerService.setContext(ExtensionCatalogService.name);
   }
 
@@ -39,8 +34,8 @@ export class ExtensionCatalogService {
       const retValue = await this.httpService.get(url, config).toPromise();
       const deploymentObj = retValue.data;
 
-      this.loggerService.log('DeploymentConfigData:');
-      this.loggerService.log(deploymentObj);
+      this.loggerService.log('DeploymentConfigData:', null, requestData);
+      this.loggerService.log(deploymentObj, null, requestData);
       return {
         // namespace is set to the INSTALLER_NAMESPACE if nothing provided in deploymentConfig
         namespace: (deploymentObj.deploymentConfig && deploymentObj.deploymentConfig.namespace) ? deploymentObj.deploymentConfig.namespace : INSTALLER_NAMESPACE,
@@ -59,7 +54,7 @@ export class ExtensionCatalogService {
         }
       } as DeployConfigData;
     } catch (error) {
-      this.loggerService.error(error.toString());
+      this.loggerService.error(error.toString(), null, null, requestData);
       throw error;
     }
   }
@@ -86,7 +81,7 @@ export class ExtensionCatalogService {
 
       await this.httpService.patch(url, data, config).toPromise();
     } catch (error) {
-      this.loggerService.error(error.toString());
+      this.loggerService.error(error.toString(), null, null, updatedDeployData);
       throw error;
     }
   }
@@ -118,12 +113,12 @@ export class ExtensionCatalogService {
 
       await this.httpService.post(url, data, config).toPromise();
     } catch (error) {
-      this.loggerService.error(error.toString());
+      this.loggerService.error(error.toString(), null, null, deployResultData);
       throw error;
     }
   }
 
-  public async sendLogsToExtensionCatalog(message: string, logType: LoggingTypes) {
+  public async sendLogsToExtensionCatalog(message: string, logType: LoggingTypes, requestData: RequestData) {
     try {
       const url = KYMA_SERVICE_CLASS_GATEWAY_URL + '/api/extension-catalog/v1/extension-installers/log';
 
@@ -131,8 +126,8 @@ export class ExtensionCatalogService {
       const config = {
         headers: {
           'Content-Type': 'application/json',
-          'X-Account-Id': this.request.body.accountId,
-          'X-Company-Id': this.request.body.companyId
+          'X-Account-Id': requestData.accountId,
+          'X-Company-Id': requestData.companyId
         }
       } as AxiosRequestConfig;
 

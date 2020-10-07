@@ -16,7 +16,8 @@ export class AllExceptionsFilter<T> extends BaseExceptionFilter {
             super.catch(exception, host);
         }
 
-        this.loggerService.error(exception);
-        this.loggerService.error('Close current workflow due to throw an exception.');
+        // TODO: impossible to get request context in application (global) filter, logging with custom logger like this not possible
+        // this.loggerService.error(exception);
+        // this.loggerService.error('Close current workflow due to throw an exception.');
     }
 }
