@@ -1,19 +1,28 @@
-import { Controller, Get, HttpCode, HttpStatus, LoggerService, Post, Req, Res } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { InstallerService } from './installerservice.service';
 import { RequestInstallData, RequestUninstallData } from '../utils/interfaces/requestdata.interface';
-import { ExtensionInstallerLogger } from 'src/utils/logger/extension-installer-logger';
+import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
 
 @Controller('/api/fsm-extension-installer/v1')
 export class InstallerServiceController {
-    private readonly loggerService: LoggerService = new ExtensionInstallerLogger(InstallerServiceController.name, true);
 
-    constructor(private readonly installerService: InstallerService) {
+    constructor(private readonly installerService: InstallerService,
+                private readonly loggerService: ExtensionInstallerLoggerService) {
+        this.loggerService.setContext(InstallerServiceController.name);
     }
 
     @Get('/status')
     @HttpCode(HttpStatus.OK)
     public getProbeValue() {
+        console.log(`
+        
+        =======
+        HELLO TEST
+        =======
+        
+        `);
+        this.loggerService.log('TESTING LOGGING 1...2...3...')
         return `It's ok now.`;
     }
 

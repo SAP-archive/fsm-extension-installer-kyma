@@ -1,9 +1,11 @@
-import { Module } from '@nestjs/common';
-import { ExtensionInstallerLogger } from 'src/utils/logger/extension-installer-logger';
+import { forwardRef, Module } from '@nestjs/common';
+import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
+import { ExtensionCatalogServiceModule } from 'src/extensioncatalogservice/extensioncatalogservice.module';
 
 @Module({
-  providers: [ExtensionInstallerLogger],
-  exports: [ExtensionInstallerLogger],
+  imports: [forwardRef(() => ExtensionCatalogServiceModule)],
+  providers: [ExtensionInstallerLoggerService],
+  exports: [ExtensionInstallerLoggerService],
 })
 export class ExtensionInstallerLoggerModule {
 }

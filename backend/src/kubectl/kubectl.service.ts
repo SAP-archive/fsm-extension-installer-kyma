@@ -1,14 +1,15 @@
-import { Injectable, LoggerService } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { KUBE_CONFIG_LOCATION, KUBECTL_BINARY_LOCATION } from '../utils/constants';
 
 import { CmdhelperService } from '../cmdhelper/cmdhelper.service';
-import { ExtensionInstallerLogger } from 'src/utils/logger/extension-installer-logger';
+import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
 
 @Injectable()
 export class KubectlService {
-    private readonly loggerService: LoggerService = new ExtensionInstallerLogger(KubectlService.name, true);
 
-    constructor(private readonly cmdhelperService: CmdhelperService) {
+    constructor(private readonly cmdhelperService: CmdhelperService,
+                private readonly loggerService: ExtensionInstallerLoggerService) {
+        this.loggerService.setContext(KubectlService.name);
     }
 
     public async getAccessUrlFromKymaByAppName(appName: string, namespace: string): Promise<string> {
