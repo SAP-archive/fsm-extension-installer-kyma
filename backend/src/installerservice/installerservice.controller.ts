@@ -1,13 +1,15 @@
-import {Controller, Get, HttpCode, HttpStatus, Logger, LoggerService, Post, Req, Res} from '@nestjs/common';
-import {Request, Response} from 'express';
-import {InstallerService} from './installerservice.service';
-import {RequestInstallData, RequestUninstallData} from '../utils/interfaces/requestdata.interface';
+import { Controller, Get, HttpCode, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
+import { InstallerService } from './installerservice.service';
+import { RequestInstallData, RequestUninstallData } from '../utils/interfaces/requestdata.interface';
+import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
 
 @Controller('/api/fsm-extension-installer/v1')
 export class InstallerServiceController {
-    private readonly loggerService: LoggerService = new Logger(InstallerServiceController.name, true);
 
-    constructor(private readonly installerService: InstallerService) {
+    constructor(private readonly installerService: InstallerService,
+                private readonly loggerService: ExtensionInstallerLoggerService) {
+        this.loggerService.setContext(InstallerServiceController.name);
     }
 
     @Get('/status')
@@ -16,18 +18,31 @@ export class InstallerServiceController {
         return `It's ok now.`;
     }
 
+    @Post('/testLogger')
+    @HttpCode(HttpStatus.ACCEPTED)
+    public testLogger(@Req() req: Request, @Res() res: Response) {
+        res.send(`It's ok now.`).end();
+
+        const requestData = {
+            accountId: req.body.accountId,
+            companyId: req.body.companyId
+        } as RequestInstallData;
+        this.loggerService.log("Request body:", null, requestData);
+        this.loggerService.log(req.body, null, requestData);
+    }
+
     @Post('/install')
     @HttpCode(HttpStatus.ACCEPTED)
     public async installExtension(@Req() req: Request, @Res() res: Response) {
         res.send('Accepted install requirement.').end();
 
-        this.loggerService.log("Request body:");
-        this.loggerService.log(req.body);
         const requestData = {
             accountId: req.body.accountId,
             companyId: req.body.companyId,
             extensionDeploymentId: req.body.extensionDeploymentId
         } as RequestInstallData;
+        this.loggerService.log("Request body:", null, requestData);
+        this.loggerService.log(req.body, null, requestData);
 
         await this.installerService.installExtension(requestData);
     }
@@ -37,13 +52,13 @@ export class InstallerServiceController {
     public async upgradeExtension(@Req() req: Request, @Res() res: Response) {
         res.send('Accepted upgrade requirement.').end();
 
-        this.loggerService.log("Request body:");
-        this.loggerService.log(req.body);
         const requestData = {
             accountId: req.body.accountId,
             companyId: req.body.companyId,
             extensionDeploymentId: req.body.extensionDeploymentId
         } as RequestInstallData;
+        this.loggerService.log("Request body:", null, requestData);
+        this.loggerService.log(req.body, null, requestData);
 
         await this.installerService.upgradeExtension(requestData);
     }
@@ -53,14 +68,15 @@ export class InstallerServiceController {
     public async uninstallExtension(@Req() req: Request, @Res() res: Response) {
         res.send('Accepted uninstall requirement.').end();
 
-        this.loggerService.log("Request body:");
-        this.loggerService.log(req.body);
         const requestData = {
             accountId: req.body.accountId,
             companyId: req.body.companyId,
             releaseName: req.body.helmRelease,
             namespace: req.body.namespace
         } as RequestUninstallData;
+        this.loggerService.log("Request body:", null, requestData);
+        this.loggerService.log(req.body, null, requestData);
+
         await this.installerService.uninstallExtension(requestData);
     }
 }

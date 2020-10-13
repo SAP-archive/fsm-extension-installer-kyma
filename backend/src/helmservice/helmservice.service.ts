@@ -1,37 +1,40 @@
-import {Injectable, Logger, LoggerService} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import {HelmBaseOptions, HelmDeployOptions} from '../utils/interfaces/helmperformoptions.interface';
-import {HELM_BINARY_LOCATION, KUBE_CONFIG_LOCATION, KYMA_VER} from '../utils/constants';
+import { HelmBaseOptions, HelmDeployOptions } from '../utils/interfaces/helmperformoptions.interface';
+import { HELM_BINARY_LOCATION, KUBE_CONFIG_LOCATION, KYMA_VER } from '../utils/constants';
 import { CmdhelperService } from './../cmdhelper/cmdhelper.service';
+import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
+import { RequestData } from 'src/utils/interfaces/requestdata.interface';
 
 @Injectable()
 export class HelmserviceService {
-    private readonly loggerService: LoggerService = new Logger(HelmserviceService.name, true);
 
-    constructor(private readonly cmdhelperService: CmdhelperService) {
+    constructor(private readonly cmdhelperService: CmdhelperService,
+                private readonly loggerService: ExtensionInstallerLoggerService) {
+        this.loggerService.setContext(HelmserviceService.name);
     }
 
-    public async install(helmDeployOptions: HelmDeployOptions) {
+    public async install(helmDeployOptions: HelmDeployOptions, requestData: RequestData) {
         //Build helm command
-        const cmdValue = this.buildHelmCmd4Install(helmDeployOptions);
+        const cmdValue = this.buildHelmCmd4Install(helmDeployOptions, requestData);
 
         //Perform helm command
-        return await this.execHelmCmd(cmdValue);
+        return await this.execHelmCmd(cmdValue, requestData);
     }
 
-    public async delete(helmDeleteOptions: HelmBaseOptions) {
+    public async delete(helmDeleteOptions: HelmBaseOptions, requestData: RequestData) {
         //Build helm command
-        const cmdValue = this.buildHelmCmd4Delete(helmDeleteOptions);
+        const cmdValue = this.buildHelmCmd4Delete(helmDeleteOptions, requestData);
 
         //Perform helm command
-        return await this.execHelmCmd(cmdValue);
+        return await this.execHelmCmd(cmdValue, requestData);
     }
 
-    public async exist(helmStatusOptions: HelmBaseOptions) {
+    public async exist(helmStatusOptions: HelmBaseOptions, requestData: RequestData) {
         let isExist = false;
-        const cmdValue = this.buildHelmCmd4Status(helmStatusOptions);
+        const cmdValue = this.buildHelmCmd4Status(helmStatusOptions, requestData);
 
-        const result = await this.execHelmCmd(cmdValue);
+        const result = await this.execHelmCmd(cmdValue, requestData);
         if (result.stdout) {
             isExist = true;
         }
@@ -39,9 +42,9 @@ export class HelmserviceService {
         return isExist;
     }
 
-    private buildHelmCmd4Install(helmDeployOptions: HelmDeployOptions): string[] {
-        this.validateNotEmpty(helmDeployOptions.releaseName, 'releaseName');
-        this.validateNotEmpty(helmDeployOptions.namespace, 'namespace');
+    private buildHelmCmd4Install(helmDeployOptions: HelmDeployOptions, requestData: RequestData): string[] {
+        this.validateNotEmpty(helmDeployOptions.releaseName, 'releaseName', requestData);
+        this.validateNotEmpty(helmDeployOptions.namespace, 'namespace', requestData);
 
         //Add --set value
         //kyma.apiv1 is kept in order to support the extension app generated from old scaffold
@@ -75,9 +78,9 @@ export class HelmserviceService {
         return installCommand.split(/(\s+)/).filter( e => e.trim().length > 0);
     }
 
-    private buildHelmCmd4Delete(helmDeleteOptions: HelmBaseOptions): string[] {
-        this.validateNotEmpty(helmDeleteOptions.releaseName, 'releaseName');
-        this.validateNotEmpty(helmDeleteOptions.namespace, 'namespace');
+    private buildHelmCmd4Delete(helmDeleteOptions: HelmBaseOptions, requestData: RequestData): string[] {
+        this.validateNotEmpty(helmDeleteOptions.releaseName, 'releaseName', requestData);
+        this.validateNotEmpty(helmDeleteOptions.namespace, 'namespace', requestData);
 
         let uninstallCommand = `uninstall --timeout 5m0s `;
 
@@ -93,9 +96,9 @@ export class HelmserviceService {
         return uninstallCommand.split(/(\s+)/).filter( e => e.trim().length > 0);
     }
 
-    private buildHelmCmd4Status(helmStatusOptions: HelmBaseOptions): string[] {
-        this.validateNotEmpty(helmStatusOptions.releaseName, 'releaseName');
-        this.validateNotEmpty(helmStatusOptions.namespace, 'namespace');
+    private buildHelmCmd4Status(helmStatusOptions: HelmBaseOptions, requestData: RequestData): string[] {
+        this.validateNotEmpty(helmStatusOptions.releaseName, 'releaseName', requestData);
+        this.validateNotEmpty(helmStatusOptions.namespace, 'namespace', requestData);
 
         let statusCommand = `status ${helmStatusOptions.releaseName}`;
 
@@ -111,25 +114,25 @@ export class HelmserviceService {
         return statusCommand.split(/(\s+)/).filter( e => e.trim().length > 0);
     }
 
-    private async execHelmCmd(cmdValue: string[]) {
+    private async execHelmCmd(cmdValue: string[], requestData: RequestData) {
         //Perform helm install command
         const result = {stdout: null, stderr: null};
         try {
             const response = await this.cmdhelperService.runCmd(`${HELM_BINARY_LOCATION}`, cmdValue)
             result.stdout = response;
-            this.loggerService.log(response);
+            this.loggerService.log(response, null, requestData);
         } catch (error) {
             result.stderr = error;
-            this.loggerService.error(error);
+            this.loggerService.error(error, null, null, requestData);
         } finally {
             return result;
         }
     }
 
-    private validateNotEmpty(arg, argName) {
+    private validateNotEmpty(arg, argName, requestData) {
         if (typeof arg === 'undefined' || arg === null || arg === '') {
             const errorMsg = `${argName} is required`;
-            this.loggerService.error(errorMsg);
+            this.loggerService.error(errorMsg, null, null, requestData);
             throw new Error(errorMsg);
         }
     }
