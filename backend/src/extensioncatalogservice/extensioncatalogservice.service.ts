@@ -5,15 +5,15 @@ import { DeployConfigData } from '../utils/interfaces/deployconfigdata.interface
 import { UpdatedDeployData } from '../utils/interfaces/updateddeploydata.interface';
 import { DeployResultData } from '../utils/interfaces/deployresultdata.interface';
 import { ChartConfigData } from '../utils/interfaces/chartconfigdata.interface';
-import { RequestData, RequestInstallData } from '../utils/interfaces/requestdata.interface';
+import { RequestInstallData } from '../utils/interfaces/requestdata.interface';
 import { INSTALLER_NAMESPACE, KYMA_SERVICE_CLASS_GATEWAY_URL } from '../utils/constants';
 import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
-import { LoggingTypes } from 'src/utils/enums/logging-types';
 
 @Injectable()
 export class ExtensionCatalogService {
 
-  constructor(private readonly loggerService: ExtensionInstallerLoggerService, private readonly httpService: HttpService) {
+  constructor(private readonly loggerService: ExtensionInstallerLoggerService,
+              private readonly httpService: HttpService) {
     loggerService.setContext(ExtensionCatalogService.name);
   }
 
@@ -114,46 +114,6 @@ export class ExtensionCatalogService {
       await this.httpService.post(url, data, config).toPromise();
     } catch (error) {
       this.loggerService.error(error.toString(), null, null, deployResultData);
-      throw error;
-    }
-  }
-
-  public async sendLogsToExtensionCatalog(message: string, logType: LoggingTypes, requestData: RequestData) {
-    try {
-      const url = KYMA_SERVICE_CLASS_GATEWAY_URL + '/api/extension-catalog/v1/extension-installers/log';
-
-      // TODO: get request context for header information
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Account-Id': requestData.accountId,
-          'X-Company-Id': requestData.companyId
-        }
-      } as AxiosRequestConfig;
-
-      const data = {
-        logMessage: message,
-        logType: logType
-      }
-
-      console.log(`
-      
-      ===============
-      
-      ${JSON.stringify(config)}
-      
-      ${JSON.stringify(data)}
-      
-      ${JSON.stringify(url)}
-      
-      ===============
-      
-      `);
-
-      // await this.httpService.post(url, data, config).toPromise();
-    } catch (error) {
-      // TODO: This will cause an infinite loop, so no logging possible like this
-      // this.loggerService.error(error.toString());
       throw error;
     }
   }

@@ -1,9 +1,8 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
-import { ExtensionCatalogServiceModule } from 'src/extensioncatalogservice/extensioncatalogservice.module';
 
 @Module({
-  imports: [forwardRef(() => ExtensionCatalogServiceModule)],
+  imports: [HttpModule],
   providers: [ExtensionInstallerLoggerService],
   exports: [ExtensionInstallerLoggerService],
 })

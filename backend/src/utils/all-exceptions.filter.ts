@@ -16,8 +16,8 @@ export class AllExceptionsFilter<T> extends BaseExceptionFilter {
             super.catch(exception, host);
         }
 
-        // TODO: impossible to get request context in application (global) filter, logging with custom logger like this not possible
-        // this.loggerService.error(exception);
-        // this.loggerService.error('Close current workflow due to throw an exception.');
+        // this will not be logged into infrastructure, only in Kyma environment, since no request-context is available
+        this.loggerService.error(exception);
+        this.loggerService.error('Close current workflow due to throw an exception.');
     }
 }
