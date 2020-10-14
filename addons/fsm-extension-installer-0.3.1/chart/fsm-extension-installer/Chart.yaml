@@ -1,5 +1,0 @@
-apiVersion: v1
-appVersion: "0.3.1"
-description: A Helm chart for FSM extension installer (on Kyma)
-name: fsm-extension-installer
-version: 0.3.1
