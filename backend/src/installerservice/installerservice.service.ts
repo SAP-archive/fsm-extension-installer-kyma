@@ -147,8 +147,7 @@ export class InstallerService {
         } as HelmBaseOptions, requestData);
 
         //Install or upgrade new helm release
-        this.loggerService.log("HelmDeployOptions:", null, requestData);
-        this.loggerService.log(helmDeployOptions, null, requestData);
+        this.loggerService.log(`HelmDeployOptions: ${JSON.stringify(helmDeployOptions)}`, null, requestData);
         const response = await this.helmserviceService.install(helmDeployOptions, requestData);
         if (response.stderr) {
             throw new Error(response.stderr);

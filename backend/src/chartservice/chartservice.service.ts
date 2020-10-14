@@ -18,8 +18,7 @@ export class ChartserviceService {
     }
 
     public async downloadChartFromGithubRepo(chartConfigData: ChartConfigData, requestData: RequestData): Promise<string> {
-        this.loggerService.log("ChartConfigData:", null, requestData);
-        this.loggerService.log(chartConfigData, null, requestData);
+        this.loggerService.log(`ChartConfigData: ${JSON.stringify(chartConfigData)}`, null, requestData);
         const repo = 'direct:' + chartConfigData.repository + (!empty(chartConfigData.ref) ? ('#' + chartConfigData.ref) : '');
         const dest = CHART_CACHE_PATH + uuidv4();
 
