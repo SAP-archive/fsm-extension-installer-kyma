@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fsm-extension-installer.fullname" . }}
+  labels:
+    app: {{ include "fsm-extension-installer.name" . }}
+    chart: {{ include "fsm-extension-installer.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: {{ include "fsm-extension-installer.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "fsm-extension-installer.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "fsm-extension-installer.fullname" . }}
+      initContainers:
+        - name: {{ .Chart.Name }}-init
+          image: alpine:3.11.6
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["sh",  "/config/init-kubeconfig.sh", "/share/kubeconfig"]
+          volumeMounts:
+            - mountPath: /share
+              name: share
+            - mountPath: /config
+              name: config
+              readOnly: true
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SHARE_DIR
+              value: "/share"
+            - name: KYMA_VER
+              value: {{ .Values.kyma.version }}
+            - name: INSTALLER_NAMESPACE
+              value: {{ .Release.Namespace }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.internalPort }}
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /share
+              name: share
+          livenessProbe:
+            httpGet:
+              path: /api/fsm-extension-installer/v1/status
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api/fsm-extension-installer/v1/status
+              port: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: share
+          emptyDir:
+            sizeLimit: 64Mi
+        - name: config
+          configMap:
+            name:  {{ include "fsm-extension-installer.fullname" . }}
