@@ -6,14 +6,14 @@ import { Request, Response } from 'express';
 import { RequestData } from 'src/utils/interfaces/requestdata.interface';
 
 @Catch()
-export class AllExceptionsFilter<T> extends BaseExceptionFilter {
+export class AllExceptionsFilter extends BaseExceptionFilter {
 
     constructor(private readonly loggerService: ExtensionInstallerLoggerService) {
         super();
         this.loggerService.setContext(AllExceptionsFilter.name);
     }
 
-    catch(exception: T, host: ArgumentsHost) {
+    catch(exception: any, host: ArgumentsHost) {
         const ctx: HttpArgumentsHost = host.switchToHttp();
         const response: Response = ctx.getResponse<Response>();
         const request: Request = ctx.getRequest<Request>();
@@ -27,6 +27,6 @@ export class AllExceptionsFilter<T> extends BaseExceptionFilter {
             companyId: request.body.companyId
         }
 
-        this.loggerService.error(`Closing the current workflow due to exception: ${JSON.stringify(exception)}`, null, null, requestData);
+        this.loggerService.error(`Closing the current workflow due to exception: ${exception}`, null, null, requestData);
     }
 }
