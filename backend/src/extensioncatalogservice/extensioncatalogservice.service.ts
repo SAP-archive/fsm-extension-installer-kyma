@@ -34,8 +34,8 @@ export class ExtensionCatalogService {
       const retValue = await this.httpService.get(url, config).toPromise();
       const deploymentObj = retValue.data;
 
-      this.loggerService.log('DeploymentConfigData:', null, requestData);
-      this.loggerService.log(deploymentObj, null, requestData);
+      this.loggerService.log(`DeploymentConfigData: ${JSON.stringify(deploymentObj)}`, null, requestData);
+
       return {
         // namespace is set to the INSTALLER_NAMESPACE if nothing provided in deploymentConfig
         namespace: (deploymentObj.deploymentConfig && deploymentObj.deploymentConfig.namespace) ? deploymentObj.deploymentConfig.namespace : INSTALLER_NAMESPACE,

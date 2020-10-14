@@ -26,7 +26,14 @@ export class InstallerService {
 
     public async installExtension(requestData: RequestInstallData) {
         this.loggerService.log("Begin to install extension application ...", null, requestData);
-        return await this.deployExtension(requestData, false);
+
+        try {
+            throw new Error("TESTING THE ERROR FORWARDING TO THE MICROSERVICE =)");
+        } catch (error) {
+            throw error;
+        } finally {
+            return await this.deployExtension(requestData, false);
+        }
     }
 
     public async upgradeExtension(requestData: RequestInstallData) {
@@ -147,8 +154,7 @@ export class InstallerService {
         } as HelmBaseOptions, requestData);
 
         //Install or upgrade new helm release
-        this.loggerService.log("HelmDeployOptions:", null, requestData);
-        this.loggerService.log(helmDeployOptions, null, requestData);
+        this.loggerService.log(`HelmDeployOptions: ${JSON.stringify(helmDeployOptions)}`, null, requestData);
         const response = await this.helmserviceService.install(helmDeployOptions, requestData);
         if (response.stderr) {
             throw new Error(response.stderr);

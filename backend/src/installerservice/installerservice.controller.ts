@@ -29,7 +29,7 @@ export class InstallerServiceController {
             extensionDeploymentId: req.body.extensionDeploymentId
         } as RequestInstallData;
 
-        this.loggerService.log(`Request body: ${req.body}`, null, requestData);
+        this.loggerService.log(`Request body: ${JSON.stringify(req.body)}`, null, requestData);
 
         await this.installerService.installExtension(requestData);
     }
@@ -45,7 +45,7 @@ export class InstallerServiceController {
             extensionDeploymentId: req.body.extensionDeploymentId
         } as RequestInstallData;
 
-        this.loggerService.log(`Request body: ${req.body}`, null, requestData);
+        this.loggerService.log(`Request body: ${JSON.stringify(req.body)}`, null, requestData);
 
         await this.installerService.upgradeExtension(requestData);
     }
@@ -62,7 +62,7 @@ export class InstallerServiceController {
             namespace: req.body.namespace
         } as RequestUninstallData;
 
-        this.loggerService.log(`Request body: ${req.body}`, null, requestData);
+        this.loggerService.log(`Request body: ${JSON.stringify(req.body)}`, null, requestData);
 
         await this.installerService.uninstallExtension(requestData);
     }

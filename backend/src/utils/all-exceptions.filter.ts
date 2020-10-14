@@ -27,6 +27,6 @@ export class AllExceptionsFilter<T> extends BaseExceptionFilter {
             companyId: request.body.companyId
         }
 
-        this.loggerService.error(`Closing the current workflow due to exception: ${exception}`, null, null, requestData);
+        this.loggerService.error(`Closing the current workflow due to exception: ${JSON.stringify(exception)}`, null, null, requestData);
     }
 }
