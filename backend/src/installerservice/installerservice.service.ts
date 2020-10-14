@@ -26,7 +26,14 @@ export class InstallerService {
 
     public async installExtension(requestData: RequestInstallData) {
         this.loggerService.log("Begin to install extension application ...", null, requestData);
-        return await this.deployExtension(requestData, false);
+
+        try {
+            throw new Error("TESTING THE ERROR FORWARDING TO THE MICROSERVICE =)");
+        } catch (error) {
+            throw error;
+        } finally {
+            return await this.deployExtension(requestData, false);
+        }
     }
 
     public async upgradeExtension(requestData: RequestInstallData) {
