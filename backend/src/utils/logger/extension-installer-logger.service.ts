@@ -55,7 +55,7 @@ export class ExtensionInstallerLoggerService extends Logger {
       } as AxiosRequestConfig;
 
       const data = {
-        logMessage: message,
+        logMessage: JSON.stringify(message),
         logType: logType
       }
 

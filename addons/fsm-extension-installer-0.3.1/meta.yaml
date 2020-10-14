@@ -1,6 +1,6 @@
 name: fsm-extension-installer
 version: 0.3.1
-id: 2f32a61c-50b3-4d1c-ae3d-71f8e3e0c91f
+id: 8027b5a4-0a77-4a1e-877b-8e2bef48a09a
 description: "A simple addon to enable installing FSM extension on Kyma"
 displayName: "FSM Extension Installer For Kyma"
 providerDisplayName: "FSM"

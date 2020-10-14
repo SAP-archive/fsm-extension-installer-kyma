@@ -18,19 +18,6 @@ export class InstallerServiceController {
         return `It's ok now.`;
     }
 
-    @Post('/testLogger')
-    @HttpCode(HttpStatus.ACCEPTED)
-    public testLogger(@Req() req: Request, @Res() res: Response) {
-        res.send(`It's ok now.`).end();
-
-        const requestData = {
-            accountId: req.body.accountId,
-            companyId: req.body.companyId
-        } as RequestInstallData;
-        this.loggerService.log("Request body:", null, requestData);
-        this.loggerService.log(req.body, null, requestData);
-    }
-
     @Post('/install')
     @HttpCode(HttpStatus.ACCEPTED)
     public async installExtension(@Req() req: Request, @Res() res: Response) {
@@ -41,8 +28,8 @@ export class InstallerServiceController {
             companyId: req.body.companyId,
             extensionDeploymentId: req.body.extensionDeploymentId
         } as RequestInstallData;
-        this.loggerService.log("Request body:", null, requestData);
-        this.loggerService.log(req.body, null, requestData);
+
+        this.loggerService.log(`Request body: ${req.body}`, null, requestData);
 
         await this.installerService.installExtension(requestData);
     }
@@ -57,8 +44,8 @@ export class InstallerServiceController {
             companyId: req.body.companyId,
             extensionDeploymentId: req.body.extensionDeploymentId
         } as RequestInstallData;
-        this.loggerService.log("Request body:", null, requestData);
-        this.loggerService.log(req.body, null, requestData);
+
+        this.loggerService.log(`Request body: ${req.body}`, null, requestData);
 
         await this.installerService.upgradeExtension(requestData);
     }
@@ -74,8 +61,8 @@ export class InstallerServiceController {
             releaseName: req.body.helmRelease,
             namespace: req.body.namespace
         } as RequestUninstallData;
-        this.loggerService.log("Request body:", null, requestData);
-        this.loggerService.log(req.body, null, requestData);
+
+        this.loggerService.log(`Request body: ${req.body}`, null, requestData);
 
         await this.installerService.uninstallExtension(requestData);
     }
