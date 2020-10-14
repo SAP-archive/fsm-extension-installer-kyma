@@ -29,8 +29,6 @@ export class InstallerService {
 
         try {
             throw new Error("TESTING THE ERROR FORWARDING TO THE MICROSERVICE =)");
-        } catch (error) {
-            throw error;
         } finally {
             return await this.deployExtension(requestData, false);
         }
