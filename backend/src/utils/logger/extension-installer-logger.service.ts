@@ -1,7 +1,7 @@
 import { HttpService, Injectable, Logger, Scope } from '@nestjs/common';
-import { LoggingTypes } from 'src/utils/enums/logging-types';
-import { RequestData } from 'src/utils/interfaces/requestdata.interface';
-import { KYMA_SERVICE_CLASS_GATEWAY_URL } from 'src/utils/constants';
+import { LoggingTypes } from '../enums/logging-types';
+import { RequestData } from '../interfaces/requestdata.interface';
+import { KYMA_SERVICE_CLASS_GATEWAY_URL } from '../constants';
 import { AxiosRequestConfig } from 'axios';
 
 @Injectable({ scope: Scope.TRANSIENT })
