@@ -3,7 +3,7 @@ import { BaseExceptionFilter } from '@nestjs/core';
 import { ExtensionInstallerLoggerService } from './logger/extension-installer-logger.service';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Request, Response } from 'express';
-import { RequestData } from 'src/utils/interfaces/requestdata.interface';
+import { RequestData } from './interfaces/requestdata.interface';
 
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {

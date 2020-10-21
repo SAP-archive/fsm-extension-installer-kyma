@@ -2,7 +2,7 @@ import { Controller, Get, HttpCode, HttpStatus, Post, Req, Res } from '@nestjs/c
 import { Request, Response } from 'express';
 import { InstallerService } from './installerservice.service';
 import { RequestInstallData, RequestUninstallData } from '../utils/interfaces/requestdata.interface';
-import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
+import { ExtensionInstallerLoggerService } from '../utils/logger/extension-installer-logger.service';
 
 @Controller('/api/fsm-extension-installer/v1')
 export class InstallerServiceController {

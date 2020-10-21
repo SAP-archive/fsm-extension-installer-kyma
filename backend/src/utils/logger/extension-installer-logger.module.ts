@@ -1,5 +1,5 @@
 import { HttpModule, Module } from '@nestjs/common';
-import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
+import { ExtensionInstallerLoggerService } from './extension-installer-logger.service';
 
 @Module({
   imports: [HttpModule],

@@ -7,7 +7,7 @@ import { DeployResultData } from '../utils/interfaces/deployresultdata.interface
 import { ChartConfigData } from '../utils/interfaces/chartconfigdata.interface';
 import { RequestInstallData } from '../utils/interfaces/requestdata.interface';
 import { INSTALLER_NAMESPACE, KYMA_SERVICE_CLASS_GATEWAY_URL } from '../utils/constants';
-import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
+import { ExtensionInstallerLoggerService } from '../utils/logger/extension-installer-logger.service';
 
 @Injectable()
 export class ExtensionCatalogService {

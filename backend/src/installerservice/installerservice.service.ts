@@ -8,7 +8,7 @@ import { UpdatedDeployData } from '../utils/interfaces/updateddeploydata.interfa
 import { DeployResultData } from '../utils/interfaces/deployresultdata.interface';
 import { KubectlService } from '../kubectl/kubectl.service';
 import { RequestData, RequestInstallData, RequestUninstallData } from '../utils/interfaces/requestdata.interface';
-import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
+import { ExtensionInstallerLoggerService } from '../utils/logger/extension-installer-logger.service';
 import yamljs = require('yamljs');
 import search = require('recursive-search');
 import path = require('path');

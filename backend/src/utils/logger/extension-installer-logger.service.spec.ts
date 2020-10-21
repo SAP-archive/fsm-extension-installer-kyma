@@ -147,5 +147,13 @@ describe('Extension Installer Logger Service', () => {
       expect(baseLoggerVerboseSpy).toHaveBeenCalledTimes(1);
       expect(baseLoggerVerboseSpy).toHaveBeenCalledWith(message, null);
     });
+
+    it('should catch error when failing to post to microservice', () => {
+      service.log(message);
+
+      expect(mockHttpService.post).not.toHaveBeenCalled();
+      expect(baseLoggerVerboseSpy).toHaveBeenCalledTimes(1);
+      expect(baseLoggerVerboseSpy).toHaveBeenCalledWith(message, null);
+    });
   });
 });

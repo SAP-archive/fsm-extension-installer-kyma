@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { KUBE_CONFIG_LOCATION, KUBECTL_BINARY_LOCATION } from '../utils/constants';
-
 import { CmdhelperService } from '../cmdhelper/cmdhelper.service';
-import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
-import { RequestData } from 'src/utils/interfaces/requestdata.interface';
+import { ExtensionInstallerLoggerService } from '../utils/logger/extension-installer-logger.service';
+import { RequestData } from '../utils/interfaces/requestdata.interface';
 
 @Injectable()
 export class KubectlService {

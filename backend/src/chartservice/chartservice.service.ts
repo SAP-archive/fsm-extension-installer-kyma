@@ -3,11 +3,10 @@ import download = require('download-git-repo');
 import empty = require('is-empty');
 import { v4 as uuidv4 } from 'uuid';
 import { Injectable } from '@nestjs/common';
-
 import { ChartConfigData } from '../utils/interfaces/chartconfigdata.interface';
 import { CHART_CACHE_PATH } from '../utils/constants';
-import { ExtensionInstallerLoggerService } from 'src/utils/logger/extension-installer-logger.service';
-import { RequestData } from 'src/utils/interfaces/requestdata.interface';
+import { ExtensionInstallerLoggerService } from '../utils/logger/extension-installer-logger.service';
+import { RequestData } from '../utils/interfaces/requestdata.interface';
 
 @Injectable()
 export class ChartserviceService {

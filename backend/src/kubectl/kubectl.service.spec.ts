@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { KubectlService } from './kubectl.service';
-import {CmdhelperServiceModule} from '../cmdhelper/cmdhelper.module';
-import {CmdhelperService} from '../cmdhelper/cmdhelper.service';
+import { CmdhelperServiceModule } from '../cmdhelper/cmdhelper.module';
+import { CmdhelperService } from '../cmdhelper/cmdhelper.service';
+import { ExtensionInstallerLoggerService } from '../utils/logger/extension-installer-logger.service';
+import { mockLoggerService } from '../utils/mocks/ExtensionInstallerLoggerService.mock';
+import { mockRequestData } from '../utils/mocks/RequestData.mock';
 
 describe('KubectlService', () => {
   let service: KubectlService;
@@ -10,7 +13,13 @@ describe('KubectlService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [CmdhelperServiceModule],
-      providers: [KubectlService],
+      providers: [
+        KubectlService,
+        {
+          provide: ExtensionInstallerLoggerService,
+          useValue: mockLoggerService
+        }
+      ],
     }).compile();
 
     service = module.get<KubectlService>(KubectlService);
@@ -28,7 +37,7 @@ describe('KubectlService', () => {
     const spy4cmdRun =
         jest.spyOn(cmdhelperService, 'runCmd').mockImplementationOnce(() => Promise.resolve(JSON.stringify(response)));
 
-    const accessUrl = await service.getAccessUrlFromKymaByAppName('test-extension', 'default');
+    const accessUrl = await service.getAccessUrlFromKymaByAppName('test-extension', 'default', mockRequestData);
     expect(spy4cmdRun).toBeCalled();
     expect(accessUrl).toBe('https://' + response.spec.hosts[0]);
 
@@ -36,7 +45,7 @@ describe('KubectlService', () => {
   });
 
   it('should throw exception, due to namespace is empty', async () => {
-    await expect(service.getAccessUrlFromKymaByAppName('test-extension', '')).rejects.toThrow('namespace is required');
+    await expect(service.getAccessUrlFromKymaByAppName('test-extension', '', mockRequestData)).rejects.toThrow('namespace is required');
   });
 
   it('should return accessurl for APIRule way', async () => {
@@ -55,7 +64,7 @@ describe('KubectlService', () => {
     const spy4cmdRun =
         jest.spyOn(cmdhelperService, 'runCmd').mockRejectedValueOnce(error).mockResolvedValue(JSON.stringify(response));
 
-    const accessUrl = await service.getAccessUrlFromKymaByAppName('test-extension', 'default');
+    const accessUrl = await service.getAccessUrlFromKymaByAppName('test-extension', 'default', mockRequestData);
     expect(accessUrl).toBe('https://' + response.items[0].spec.hosts[0]);
     expect(spy4cmdRun).toBeCalledTimes(2);
 
@@ -67,7 +76,7 @@ describe('KubectlService', () => {
     const spy4cmdRun =
         jest.spyOn(cmdhelperService, 'runCmd').mockRejectedValueOnce(error).mockRejectedValueOnce(error);
 
-    await expect(service.getAccessUrlFromKymaByAppName('test-extension', 'default')).rejects.toThrowError(error);
+    await expect(service.getAccessUrlFromKymaByAppName('test-extension', 'default', mockRequestData)).rejects.toThrowError(error);
     expect(spy4cmdRun).toBeCalledTimes(2);
 
     spy4cmdRun.mockRestore();

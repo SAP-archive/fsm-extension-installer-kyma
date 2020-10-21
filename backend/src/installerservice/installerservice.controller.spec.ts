@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import { InstallerServiceController } from './installerservice.controller';
-import {InstallerService} from './installerservice.service';
-import {ChartServiceModule} from '../chartservice/chartservice.module';
-import {HelmserviceModule} from '../helmservice/helmservice.module';
-import {KubectlModule} from '../kubectl/kubectl.module';
-import {ExtensionCatalogServiceModule} from '../extensioncatalogservice/extensioncatalogservice.module';
+import { InstallerService } from './installerservice.service';
+import { ChartServiceModule } from '../chartservice/chartservice.module';
+import { HelmserviceModule } from '../helmservice/helmservice.module';
+import { KubectlModule } from '../kubectl/kubectl.module';
+import { ExtensionCatalogServiceModule } from '../extensioncatalogservice/extensioncatalogservice.module';
+import { ExtensionInstallerLoggerService } from '../utils/logger/extension-installer-logger.service';
+import { mockLoggerService } from '../utils/mocks/ExtensionInstallerLoggerService.mock';
 
 describe('InstallerServiceController', () => {
   let controller: InstallerServiceController;
@@ -14,7 +16,13 @@ describe('InstallerServiceController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ChartServiceModule, HelmserviceModule, KubectlModule, ExtensionCatalogServiceModule],
-      providers: [InstallerService],
+      providers: [
+        InstallerService,
+        {
+          provide: ExtensionInstallerLoggerService,
+          useValue: mockLoggerService
+        }
+      ],
       controllers: [InstallerServiceController],
     }).compile();
 
