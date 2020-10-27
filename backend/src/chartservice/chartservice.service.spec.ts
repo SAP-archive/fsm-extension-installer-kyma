@@ -1,13 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import fse = require('fs-extra');
 import { ChartserviceService } from './chartservice.service';
-import {CHART_CACHE_PATH} from '../utils/constants';
-import {ChartConfigData} from '../utils/interfaces/chartconfigdata.interface';
+import { CHART_CACHE_PATH } from '../utils/constants';
+import { ChartConfigData } from '../utils/interfaces/chartconfigdata.interface';
+import { v4 as uuidv4 } from 'uuid';
+import { mockLoggerService } from '../utils/mocks/ExtensionInstallerLoggerService.mock';
+import { mockRequestData } from '../utils/mocks/RequestData.mock';
+import { ExtensionInstallerLoggerService } from '../utils/logger/extension-installer-logger.service';
+import fse = require('fs-extra');
+import download = require('download-git-repo');
 
 jest.mock('download-git-repo');
 jest.mock('uuid');
-import download = require('download-git-repo');
-import {v4 as uuidv4} from 'uuid';
+
 
 describe('ChartserviceService', () => {
   let service: ChartserviceService;
@@ -17,7 +21,13 @@ describe('ChartserviceService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ChartserviceService],
+      providers: [
+        ChartserviceService,
+        {
+          provide: ExtensionInstallerLoggerService,
+          useValue: mockLoggerService
+        }
+      ],
     }).compile();
 
     service = module.get<ChartserviceService>(ChartserviceService);
@@ -49,7 +59,7 @@ describe('ChartserviceService', () => {
     });
     uuidv4.mockImplementation(() => {return mockId});
 
-    await expect(service.downloadChartFromGithubRepo(chartConfigData)).resolves.toEqual(CHART_CACHE_PATH + mockId);
+    await expect(service.downloadChartFromGithubRepo(chartConfigData, mockRequestData)).resolves.toEqual(CHART_CACHE_PATH + mockId);
   });
 
   it('should failed download chart from github repo', async () => {
@@ -67,6 +77,6 @@ describe('ChartserviceService', () => {
       fn(error);
     });
 
-    await expect(service.downloadChartFromGithubRepo(chartConfigData)).rejects.toThrow(error);
+    await expect(service.downloadChartFromGithubRepo(chartConfigData, mockRequestData)).rejects.toThrow(error);
   });
 });

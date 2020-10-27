@@ -1,23 +1,23 @@
 import fse = require('fs-extra');
 import download = require('download-git-repo');
 import empty = require('is-empty');
-import {v4 as uuidv4} from 'uuid';
-import {Injectable, Logger, LoggerService} from '@nestjs/common';
-
-import {ChartConfigData} from '../utils/interfaces/chartconfigdata.interface';
-import {CHART_CACHE_PATH} from '../utils/constants';
+import { v4 as uuidv4 } from 'uuid';
+import { Injectable } from '@nestjs/common';
+import { ChartConfigData } from '../utils/interfaces/chartconfigdata.interface';
+import { CHART_CACHE_PATH } from '../utils/constants';
+import { ExtensionInstallerLoggerService } from '../utils/logger/extension-installer-logger.service';
+import { RequestData } from '../utils/interfaces/requestdata.interface';
 
 @Injectable()
 export class ChartserviceService {
-    private readonly loggerService: LoggerService = new Logger(ChartserviceService.name, true);
 
-    constructor() {
+    constructor(private readonly loggerService: ExtensionInstallerLoggerService) {
+        this.loggerService.setContext(ChartserviceService.name);
         this.prepareStoredPath4Chart();
     }
 
-    public async downloadChartFromGithubRepo(chartConfigData: ChartConfigData): Promise<string> {
-        this.loggerService.log("ChartConfigData:");
-        this.loggerService.log(chartConfigData);
+    public async downloadChartFromGithubRepo(chartConfigData: ChartConfigData, requestData: RequestData): Promise<string> {
+        this.loggerService.log(`ChartConfigData: ${JSON.stringify(chartConfigData)}`, null, requestData);
         const repo = 'direct:' + chartConfigData.repository + (!empty(chartConfigData.ref) ? ('#' + chartConfigData.ref) : '');
         const dest = CHART_CACHE_PATH + uuidv4();
 
@@ -32,7 +32,7 @@ export class ChartserviceService {
                 });
             });
         } catch (err) {
-            this.loggerService.error(err.toString());
+            this.loggerService.error(err.toString(), null, null, requestData);
             throw err;
         }
     }

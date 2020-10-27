@@ -1,20 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { InstallerService } from './installerservice.service';
-import {ExtensionCatalogServiceModule} from '../extensioncatalogservice/extensioncatalogservice.module';
-import {ChartServiceModule} from '../chartservice/chartservice.module';
-import {HelmserviceModule} from '../helmservice/helmservice.module';
-import {KubectlModule} from '../kubectl/kubectl.module';
-import {RequestInstallData, RequestUninstallData} from '../utils/interfaces/requestdata.interface';
-import {ExtensionCatalogService} from '../extensioncatalogservice/extensioncatalogservice.service';
-import {DeployConfigData} from '../utils/interfaces/deployconfigdata.interface';
-import {ChartserviceService} from '../chartservice/chartservice.service';
-import {HelmserviceService} from '../helmservice/helmservice.service';
-import {KubectlService} from '../kubectl/kubectl.service';
+import { ExtensionCatalogServiceModule } from '../extensioncatalogservice/extensioncatalogservice.module';
+import { ChartServiceModule } from '../chartservice/chartservice.module';
+import { HelmserviceModule } from '../helmservice/helmservice.module';
+import { KubectlModule } from '../kubectl/kubectl.module';
+import { RequestInstallData, RequestUninstallData } from '../utils/interfaces/requestdata.interface';
+import { ExtensionCatalogService } from '../extensioncatalogservice/extensioncatalogservice.service';
+import { DeployConfigData } from '../utils/interfaces/deployconfigdata.interface';
+import { ChartserviceService } from '../chartservice/chartservice.service';
+import { HelmserviceService } from '../helmservice/helmservice.service';
+import { KubectlService } from '../kubectl/kubectl.service';
+import { ExtensionInstallerLoggerService } from '../utils/logger/extension-installer-logger.service';
+import { mockLoggerService } from '../utils/mocks/ExtensionInstallerLoggerService.mock';
+import search = require('recursive-search');
+import yamljs = require('yamljs');
 
 jest.mock('recursive-search');
-import search = require('recursive-search');
 jest.mock('yamljs');
-import yamljs = require('yamljs');
 
 describe('InstallerService', () => {
   let service: InstallerService;
@@ -26,7 +28,13 @@ describe('InstallerService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ExtensionCatalogServiceModule, ChartServiceModule, HelmserviceModule, KubectlModule],
-      providers: [InstallerService],
+      providers: [
+        InstallerService,
+        {
+          provide: ExtensionInstallerLoggerService,
+          useValue: mockLoggerService
+        }
+      ],
     }).compile();
 
     service = module.get<InstallerService>(InstallerService);

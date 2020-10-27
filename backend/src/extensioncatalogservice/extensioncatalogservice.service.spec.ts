@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {HttpModule, HttpService} from '@nestjs/common';
-import {empty} from 'rxjs';
+import { HttpModule, HttpService } from '@nestjs/common';
+import { empty } from 'rxjs';
 import { ExtensionCatalogService } from './extensioncatalogservice.service';
-import {RequestInstallData} from '../utils/interfaces/requestdata.interface';
-import {DeployConfigData} from '../utils/interfaces/deployconfigdata.interface';
-import {UpdatedDeployData} from '../utils/interfaces/updateddeploydata.interface';
-import {DeployResultData} from '../utils/interfaces/deployresultdata.interface';
+import { RequestInstallData } from '../utils/interfaces/requestdata.interface';
+import { DeployConfigData } from '../utils/interfaces/deployconfigdata.interface';
+import { UpdatedDeployData } from '../utils/interfaces/updateddeploydata.interface';
+import { DeployResultData } from '../utils/interfaces/deployresultdata.interface';
+import { ExtensionInstallerLoggerService } from '../utils/logger/extension-installer-logger.service';
+import { mockLoggerService } from '../utils/mocks/ExtensionInstallerLoggerService.mock';
 
 describe('ExtensionCatalogService', () => {
   let service: ExtensionCatalogService;
@@ -14,7 +16,13 @@ describe('ExtensionCatalogService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [HttpModule],
-      providers: [ExtensionCatalogService],
+      providers: [
+        ExtensionCatalogService,
+        {
+          provide: ExtensionInstallerLoggerService,
+          useValue: mockLoggerService
+        }
+      ],
     }).compile();
 
     service = module.get<ExtensionCatalogService>(ExtensionCatalogService);

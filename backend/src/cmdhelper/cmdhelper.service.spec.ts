@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import childProcess = require('child_process');
 import { CmdhelperService } from './cmdhelper.service';
+import { Readable } from 'stream';
+import { Test, TestingModule } from '@nestjs/testing';
 
 jest.mock('child_process');
-import childProcess = require('child_process');
-import {Readable} from 'stream';
 
 describe('CmdhelperService', () => {
   let service: CmdhelperService;
