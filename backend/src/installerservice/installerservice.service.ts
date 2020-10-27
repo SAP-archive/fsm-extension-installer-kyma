@@ -25,17 +25,17 @@ export class InstallerService {
     }
 
     public async installExtension(requestData: RequestInstallData) {
-        this.loggerService.log("Begin to install extension application ...", null, requestData);
+        this.loggerService.log('Begin to install extension application ...', null, requestData);
         return await this.deployExtension(requestData, false);
     }
 
     public async upgradeExtension(requestData: RequestInstallData) {
-        this.loggerService.log("Begin to upgrade extension application ...", null, requestData);
+        this.loggerService.log('Begin to upgrade extension application ...', null, requestData);
         return await this.deployExtension(requestData, true);
     }
 
     public async uninstallExtension(requestData: RequestUninstallData) {
-        this.loggerService.log("Begin to uninstall extension application ...", null, requestData);
+        this.loggerService.log('Begin to uninstall extension application ...', null, requestData);
 
         await this.helmserviceService.delete({releaseName: requestData.releaseName,
             namespace: requestData.namespace} as HelmBaseOptions, requestData);
